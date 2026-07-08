@@ -7,5 +7,6 @@ export const SITE_URL = 'https://papermint.pages.dev'
 export const DONATE_LINKS: { label: string; url: string }[] = [
   { label: 'Buy me a coffee', url: 'https://buymeacoffee.com/sareefirshm' },
   { label: 'Ko-fi', url: 'https://ko-fi.com/irshansareef' },
+  { label: 'Liberapay', url: 'https://liberapay.com/~1923459/donate' },
   { label: 'PayPal', url: 'https://www.paypal.me/trendbazaar585' },
 ]
