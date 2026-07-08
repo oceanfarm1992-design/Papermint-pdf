@@ -4,6 +4,7 @@ import { Clock, Search, Star } from 'lucide-react'
 import { CATEGORIES, TOOLS, searchTools, toolsByCategory } from '@/data/tools'
 import ToolCard from '@/components/ToolCard'
 import PrivacyNote from '@/components/PrivacyNote'
+import PrivacyContent from '@/components/PrivacyContent'
 import { FAVORITES_KEY, RECENTS_KEY, useLocalList } from '@/hooks/useLocalList'
 import { useSeo } from '@/hooks/useSeo'
 
@@ -162,6 +163,8 @@ export default function Home() {
               </section>
             )
           })}
+
+          <PrivacyContent />
         </>
       )}
     </div>
