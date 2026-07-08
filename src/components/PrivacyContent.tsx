@@ -1,9 +1,12 @@
 import { FileText, FolderInput, HardDriveDownload, ShieldCheck } from 'lucide-react'
+import { CATEGORIES, TOOLS, toolsByCategory } from '@/data/tools'
 
 /**
  * SEO / marketing content rendered below the tool grid on the homepage.
  * Original copy (not templated from any competitor). All claims are written to
  * be truthful for this app — note the OCR offline caveat is stated explicitly.
+ * The category showcase and tool count read from the live registry so they stay
+ * accurate as tools are added.
  */
 
 const STEPS = [
@@ -51,24 +54,8 @@ const AUDIENCES = [
   },
 ]
 
-const COMPARISON: { feature: string; us: string; them: string }[] = [
-  {
-    feature: 'Your file is sent to a server',
-    us: 'Never — it stays in your browser',
-    them: 'Yes — uploaded and processed remotely',
-  },
-  { feature: 'Account required', us: 'No', them: 'Often, for full features' },
-  { feature: 'Watermark on the result', us: 'No', them: 'Sometimes, on free tiers' },
-  { feature: 'Works offline after first load', us: 'Yes*', them: 'No — needs their servers' },
-  {
-    feature: 'You can verify it yourself',
-    us: 'Yes — the Network tab shows no file leaves',
-    them: 'Not really',
-  },
-  { feature: 'Price', us: 'Free, unlimited', them: 'Free tier is usually limited' },
-]
-
 export default function PrivacyContent() {
+  const toolCount = TOOLS.length
   return (
     <section
       aria-labelledby="why-private"
@@ -76,21 +63,50 @@ export default function PrivacyContent() {
     >
       <div className="mx-auto max-w-3xl">
         <h2 id="why-private" className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Private PDF tools that never upload your files
+          {toolCount} private PDF tools that never upload your files
         </h2>
         <div className="mt-4 space-y-4 leading-relaxed text-neutral-600 dark:text-neutral-300">
           <p>
             Most popular PDF tools — including big cloud services like iLovePDF and Smallpdf — work by
             sending your document to their servers, processing it there, and sending it back. Privacy PDF
-            Tools works the opposite way: every operation runs inside your own browser tab using
+            Tools works the opposite way: all {toolCount} tools run inside your own browser tab using
             JavaScript and WebAssembly. Your file is read from your disk, processed in your device’s
             memory, and saved back — it never travels to a server, because we don’t run one that could
             receive it.
           </p>
           <p>
-            That’s not a policy promise you have to trust; it’s how the app is built. Open your browser’s
-            developer tools, watch the Network tab, and you’ll see your file never leaves the page.
+            And it’s not a stripped-down handful of features. This is a full suite — organize, edit,
+            convert to and from Word/Excel/PowerPoint and images, OCR, sign, fill forms, compress,
+            protect and redact — all in one place, all free, and all completely private. That’s not a
+            policy promise you have to trust; open your browser’s Network tab and watch: your file never
+            leaves the page.
           </p>
+        </div>
+      </div>
+
+      {/* Everything you can do — the full breadth, straight from the registry */}
+      <div className="mx-auto mt-12 max-w-5xl">
+        <h3 className="text-lg font-semibold">Everything you can do, privately</h3>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CATEGORIES.map((cat) => {
+            const count = toolsByCategory(cat.id).length
+            if (count === 0) return null
+            const Icon = cat.icon
+            return (
+              <div key={cat.id} className="card p-5">
+                <div className="flex items-center gap-2.5">
+                  <span className={`inline-flex rounded-lg p-1.5 ${cat.accent}`}>
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  <h4 className="font-semibold">{cat.name}</h4>
+                  <span className="ml-auto text-xs font-medium text-neutral-400">
+                    {count} tool{count === 1 ? '' : 's'}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{cat.description}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -133,15 +149,71 @@ export default function PrivacyContent() {
               </tr>
             </thead>
             <tbody>
-              {COMPARISON.map((row) => (
-                <tr key={row.feature} className="border-b border-neutral-100 dark:border-neutral-800/70">
-                  <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
-                    {row.feature}
-                  </td>
-                  <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">{row.us}</td>
-                  <td className="py-2.5 text-neutral-500 dark:text-neutral-400">{row.them}</td>
-                </tr>
-              ))}
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  Your file is sent to a server
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">
+                  Never — it stays in your browser
+                </td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  Yes — uploaded and processed remotely
+                </td>
+              </tr>
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  Range of tools
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">
+                  {toolCount}+, from organize to OCR, convert, sign and secure
+                </td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  Usually a handful of common operations
+                </td>
+              </tr>
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  Account required
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">No</td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  Often, for full features
+                </td>
+              </tr>
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  Watermark on the result
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">No</td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  Sometimes, on free tiers
+                </td>
+              </tr>
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  Works offline after first load
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">Yes*</td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  No — needs their servers
+                </td>
+              </tr>
+              <tr className="border-b border-neutral-100 dark:border-neutral-800/70">
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">
+                  You can verify it yourself
+                </td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">
+                  Yes — the Network tab shows no file leaves
+                </td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">Not really</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 pr-4 font-medium text-neutral-700 dark:text-neutral-300">Price</td>
+                <td className="py-2.5 pr-4 text-neutral-700 dark:text-neutral-300">Free, unlimited</td>
+                <td className="py-2.5 text-neutral-500 dark:text-neutral-400">
+                  Free tier is usually limited
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
