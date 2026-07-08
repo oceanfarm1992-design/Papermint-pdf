@@ -109,7 +109,10 @@ export default function CropPage({ tool }: { tool: ToolDef }) {
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])} wide>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
@@ -119,22 +122,50 @@ export default function CropPage({ tool }: { tool: ToolDef }) {
         </p>
         <label className="flex items-center gap-2 text-sm">
           Apply to
-          <select className="input-base w-auto py-1.5" value={applyTo} onChange={(e) => setApplyTo(e.target.value as 'all' | 'current')} aria-label="Apply crop to">
+          <select
+            className="input-base w-auto py-1.5"
+            value={applyTo}
+            onChange={(e) => setApplyTo(e.target.value as 'all' | 'current')}
+            aria-label="Apply crop to"
+          >
             <option value="all">All pages</option>
             <option value="current">This page only</option>
           </select>
         </label>
         <div className="flex items-center gap-1">
-          <button type="button" className="btn-ghost" aria-label="Previous page" disabled={pageNo <= 1} onClick={() => void goto(pageNo - 1)}>
+          <button
+            type="button"
+            className="btn-ghost"
+            aria-label="Previous page"
+            disabled={pageNo <= 1}
+            onClick={() => void goto(pageNo - 1)}
+          >
             <ChevronLeft className="h-4 w-4" aria-hidden />
           </button>
-          <span className="text-sm tabular-nums">{pageNo} / {numPages}</span>
-          <button type="button" className="btn-ghost" aria-label="Next page" disabled={pageNo >= numPages} onClick={() => void goto(pageNo + 1)}>
+          <span className="text-sm tabular-nums">
+            {pageNo} / {numPages}
+          </span>
+          <button
+            type="button"
+            className="btn-ghost"
+            aria-label="Next page"
+            disabled={pageNo >= numPages}
+            onClick={() => void goto(pageNo + 1)}
+          >
             <ChevronRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
-        <button type="button" className="btn-primary" disabled={busy || !sel} onClick={() => void apply()}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={busy || !sel}
+          onClick={() => void apply()}
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden />
+          )}
           Crop & download
         </button>
       </div>
@@ -163,10 +194,13 @@ export default function CropPage({ tool }: { tool: ToolDef }) {
           {sel && (
             <>
               {/* dim everything outside the selection */}
-              <div className="pointer-events-none absolute inset-0" style={{
-                background: 'rgba(0,0,0,0.45)',
-                clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${(sel.y / pageDims.h) * 100}%, ${(sel.x / pageDims.w) * 100}% ${(sel.y / pageDims.h) * 100}%, ${(sel.x / pageDims.w) * 100}% ${((sel.y + sel.h) / pageDims.h) * 100}%, ${((sel.x + sel.w) / pageDims.w) * 100}% ${((sel.y + sel.h) / pageDims.h) * 100}%, ${((sel.x + sel.w) / pageDims.w) * 100}% ${(sel.y / pageDims.h) * 100}%, 0 ${(sel.y / pageDims.h) * 100}%)`,
-              }} />
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: 'rgba(0,0,0,0.45)',
+                  clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${(sel.y / pageDims.h) * 100}%, ${(sel.x / pageDims.w) * 100}% ${(sel.y / pageDims.h) * 100}%, ${(sel.x / pageDims.w) * 100}% ${((sel.y + sel.h) / pageDims.h) * 100}%, ${((sel.x + sel.w) / pageDims.w) * 100}% ${((sel.y + sel.h) / pageDims.h) * 100}%, ${((sel.x + sel.w) / pageDims.w) * 100}% ${(sel.y / pageDims.h) * 100}%, 0 ${(sel.y / pageDims.h) * 100}%)`,
+                }}
+              />
               <div
                 className="pointer-events-none absolute border-2 border-brand-400"
                 style={{

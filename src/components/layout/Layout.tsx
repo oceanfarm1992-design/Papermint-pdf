@@ -118,9 +118,15 @@ export default function Layout() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4">
           <p>🔒 Files are processed locally in your browser — nothing is ever uploaded.</p>
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link to="/privacy" className="hover:text-neutral-900 dark:hover:text-white">Privacy</Link>
-            <Link to="/terms" className="hover:text-neutral-900 dark:hover:text-white">Terms</Link>
-            <Link to="/contact" className="hover:text-neutral-900 dark:hover:text-white">Contact</Link>
+            <Link to="/privacy" className="hover:text-neutral-900 dark:hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/terms" className="hover:text-neutral-900 dark:hover:text-white">
+              Terms
+            </Link>
+            <Link to="/contact" className="hover:text-neutral-900 dark:hover:text-white">
+              Contact
+            </Link>
             <a
               href="https://github.com"
               target="_blank"

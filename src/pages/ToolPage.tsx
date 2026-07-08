@@ -102,9 +102,7 @@ export default function ToolPage() {
         signal: controller.signal,
         onProgress: (fraction, stage) =>
           setPhase((prev) =>
-            prev.kind === 'working'
-              ? { ...prev, fraction, stage: stage ?? prev.stage }
-              : prev,
+            prev.kind === 'working' ? { ...prev, fraction, stage: stage ?? prev.stage } : prev,
           ),
       })
       if (controller.signal.aborted) return
@@ -211,20 +209,42 @@ export default function ToolPage() {
                   <span className="text-xs tabular-nums text-neutral-400">{formatBytes(file.size)}</span>
                   {tool.multiple && files.length > 1 && (
                     <span className="flex gap-0.5">
-                      <button type="button" className="btn-ghost px-1.5" aria-label={`Move ${file.name} up`} disabled={i === 0} onClick={() => moveFile(i, -1)}>
+                      <button
+                        type="button"
+                        className="btn-ghost px-1.5"
+                        aria-label={`Move ${file.name} up`}
+                        disabled={i === 0}
+                        onClick={() => moveFile(i, -1)}
+                      >
                         ↑
                       </button>
-                      <button type="button" className="btn-ghost px-1.5" aria-label={`Move ${file.name} down`} disabled={i === files.length - 1} onClick={() => moveFile(i, 1)}>
+                      <button
+                        type="button"
+                        className="btn-ghost px-1.5"
+                        aria-label={`Move ${file.name} down`}
+                        disabled={i === files.length - 1}
+                        onClick={() => moveFile(i, 1)}
+                      >
                         ↓
                       </button>
                     </span>
                   )}
                   {file.type === 'application/pdf' && (
-                    <button type="button" className="btn-ghost" aria-label={`Preview ${file.name}`} onClick={() => setPreview(file)}>
+                    <button
+                      type="button"
+                      className="btn-ghost"
+                      aria-label={`Preview ${file.name}`}
+                      onClick={() => setPreview(file)}
+                    >
                       <Eye className="h-4 w-4" aria-hidden />
                     </button>
                   )}
-                  <button type="button" className="btn-ghost text-rose-500" aria-label={`Remove ${file.name}`} onClick={() => removeFile(i)}>
+                  <button
+                    type="button"
+                    className="btn-ghost text-rose-500"
+                    aria-label={`Remove ${file.name}`}
+                    onClick={() => removeFile(i)}
+                  >
                     <Trash2 className="h-4 w-4" aria-hidden />
                   </button>
                 </li>
@@ -258,7 +278,12 @@ export default function ToolPage() {
           )}
 
           <div className="flex justify-center pt-2">
-            <button type="button" className="btn-primary px-8 py-3 text-base" disabled={!canRun} onClick={() => void run()}>
+            <button
+              type="button"
+              className="btn-primary px-8 py-3 text-base"
+              disabled={!canRun}
+              onClick={() => void run()}
+            >
               <Play className="h-5 w-5" aria-hidden />
               {tool.minFiles > files.length
                 ? `Select ${tool.minFiles - files.length} more file${tool.minFiles - files.length === 1 ? '' : 's'}`

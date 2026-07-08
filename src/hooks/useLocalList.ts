@@ -62,7 +62,14 @@ export function useLocalList(key: string, max = 24) {
     [key, max],
   )
 
-  const remove = useCallback((slug: string) => write(key, read(key).filter((s) => s !== slug)), [key])
+  const remove = useCallback(
+    (slug: string) =>
+      write(
+        key,
+        read(key).filter((s) => s !== slug),
+      ),
+    [key],
+  )
 
   const toggle = useCallback(
     (slug: string) => {

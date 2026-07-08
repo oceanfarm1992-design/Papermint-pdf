@@ -11,7 +11,9 @@ const PAGE_SIZES: Record<string, [number, number]> = {
   letter: [612, 792],
 }
 
-async function fileToImageBytes(file: File): Promise<{ bytes: Uint8Array; kind: 'png' | 'jpg'; w: number; h: number }> {
+async function fileToImageBytes(
+  file: File,
+): Promise<{ bytes: Uint8Array; kind: 'png' | 'jpg'; w: number; h: number }> {
   const isJpg = file.type === 'image/jpeg'
   const isPng = file.type === 'image/png'
   if (isJpg || isPng) {
@@ -135,7 +137,12 @@ export const textToPdf: ProcessFn = async (files, _options, ctx) => {
         const h = /^(#{1,6})\s+(.*)$/.exec(line)
         if (h && h[1] && h[2] !== undefined) {
           const level = h[1].length
-          paras.push({ text: h[2], size: level === 1 ? 20 : level === 2 ? 16 : 13, bold: true, spaceBefore: 10 })
+          paras.push({
+            text: h[2],
+            size: level === 1 ? 20 : level === 2 ? 16 : 13,
+            bold: true,
+            spaceBefore: 10,
+          })
           continue
         }
         const bullet = /^[-*+]\s+(.*)$/.exec(line)
@@ -143,7 +150,13 @@ export const textToPdf: ProcessFn = async (files, _options, ctx) => {
           paras.push({ text: `• ${bullet[1]}` })
           continue
         }
-        paras.push({ text: line.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').replace(/`(.+?)`/g, '$1') || ' ' })
+        paras.push({
+          text:
+            line
+              .replace(/\*\*(.+?)\*\*/g, '$1')
+              .replace(/\*(.+?)\*/g, '$1')
+              .replace(/`(.+?)`/g, '$1') || ' ',
+        })
       } else {
         paras.push({ text: line || ' ' })
       }
@@ -163,7 +176,8 @@ async function readZipEntry(zip: JSZip, path: string): Promise<string | null> {
 
 function parseXml(xml: string): Document {
   const doc = new DOMParser().parseFromString(xml, 'application/xml')
-  if (doc.querySelector('parsererror')) throw new UserError('The document XML could not be parsed — the file may be corrupted.')
+  if (doc.querySelector('parsererror'))
+    throw new UserError('The document XML could not be parsed — the file may be corrupted.')
   return doc
 }
 
@@ -175,7 +189,10 @@ export const docxToPdf: ProcessFn = async (files, _options, ctx) => {
     throw new UserError('This is not a valid .docx file.')
   })
   const xml = await readZipEntry(zip, 'word/document.xml')
-  if (!xml) throw new UserError('This is not a valid .docx file (missing document.xml). Legacy .doc files are not supported.')
+  if (!xml)
+    throw new UserError(
+      'This is not a valid .docx file (missing document.xml). Legacy .doc files are not supported.',
+    )
 
   ctx.onProgress(0.4, 'Converting paragraphs')
   const dom = parseXml(xml)
@@ -284,7 +301,8 @@ export const pptxToPdf: ProcessFn = async (files, _options, ctx) => {
   const slidePaths = Object.keys(zip.files)
     .filter((p) => /^ppt\/slides\/slide\d+\.xml$/.test(p))
     .sort((a, b) => Number(a.match(/\d+/)?.[0] ?? 0) - Number(b.match(/\d+/)?.[0] ?? 0))
-  if (slidePaths.length === 0) throw new UserError('No slides found in this file. Legacy .ppt files are not supported.')
+  if (slidePaths.length === 0)
+    throw new UserError('No slides found in this file. Legacy .ppt files are not supported.')
 
   const paras: Paragraph[] = []
   for (let s = 0; s < slidePaths.length; s++) {
@@ -332,7 +350,9 @@ export const htmlToPdf: ProcessFn = async (files, _options, ctx) => {
         paras.push({ text, size: 11, spaceBefore: 4, mono: tag === 'pre' })
       } else if (tag === 'li') {
         paras.push({ text: `• ${text}`, size: 11 })
-      } else if (['div', 'main', 'article', 'section', 'body', 'ul', 'ol', 'table', 'tbody', 'tr'].includes(tag)) {
+      } else if (
+        ['div', 'main', 'article', 'section', 'body', 'ul', 'ol', 'table', 'tbody', 'tr'].includes(tag)
+      ) {
         walk(child)
       }
     }

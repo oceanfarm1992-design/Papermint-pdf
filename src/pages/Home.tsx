@@ -93,7 +93,9 @@ export default function Home() {
       {searching ? (
         <section aria-label="Search results">
           <h2 className="mb-4 text-lg font-semibold">
-            {results.length === 0 ? `No tools match “${query}”` : `${results.length} tool${results.length === 1 ? '' : 's'} found`}
+            {results.length === 0
+              ? `No tools match “${query}”`
+              : `${results.length} tool${results.length === 1 ? '' : 's'} found`}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((tool) => (

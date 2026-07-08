@@ -86,7 +86,8 @@ export default function CreateFormsPage({ tool }: { tool: ToolDef }) {
       const names = new Set<string>()
       for (const p of placements) {
         if (!p.name.trim()) throw new UserError('Every field needs a name.')
-        if (names.has(p.name)) throw new UserError(`Duplicate field name “${p.name}” — names must be unique.`)
+        if (names.has(p.name))
+          throw new UserError(`Duplicate field name “${p.name}” — names must be unique.`)
         names.add(p.name)
       }
       const doc = await openWithPdfLib(file)
@@ -114,12 +115,19 @@ export default function CreateFormsPage({ tool }: { tool: ToolDef }) {
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])} wide>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div role="radiogroup" aria-label="Field type" className="mr-auto flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
+        <div
+          role="radiogroup"
+          aria-label="Field type"
+          className="mr-auto flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800"
+        >
           <button
             type="button"
             role="radio"
@@ -139,8 +147,17 @@ export default function CreateFormsPage({ tool }: { tool: ToolDef }) {
             <CheckSquare className="h-4 w-4" aria-hidden /> Checkbox
           </button>
         </div>
-        <button type="button" className="btn-primary" disabled={busy || !file} onClick={() => void apply()}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={busy || !file}
+          onClick={() => void apply()}
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden />
+          )}
           Create form & download
         </button>
       </div>
@@ -179,7 +196,9 @@ export default function CreateFormsPage({ tool }: { tool: ToolDef }) {
         <aside className="card h-fit p-4 lg:sticky lg:top-20" aria-label="Placed fields">
           <h2 className="mb-3 font-semibold">Fields ({placements.length})</h2>
           {placements.length === 0 ? (
-            <p className="text-sm text-neutral-400">Click anywhere on a page to place a {fieldType === 'text' ? 'text field' : 'checkbox'}.</p>
+            <p className="text-sm text-neutral-400">
+              Click anywhere on a page to place a {fieldType === 'text' ? 'text field' : 'checkbox'}.
+            </p>
           ) : (
             <ul className="space-y-2">
               {placements.map((p) => (
@@ -189,7 +208,9 @@ export default function CreateFormsPage({ tool }: { tool: ToolDef }) {
                     value={p.name}
                     aria-label="Field name"
                     onChange={(e) =>
-                      setPlacements((prev) => prev.map((q) => (q.id === p.id ? { ...q, name: e.target.value } : q)))
+                      setPlacements((prev) =>
+                        prev.map((q) => (q.id === p.id ? { ...q, name: e.target.value } : q)),
+                      )
                     }
                   />
                   <span className="text-[10px] text-neutral-400">p.{p.page + 1}</span>

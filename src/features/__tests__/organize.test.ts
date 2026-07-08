@@ -41,7 +41,11 @@ describe('organize features (real pdf-lib round-trips)', () => {
 
   it('splits every N pages', async () => {
     const out = await split([await makePdf(5)], { mode: 'every', every: 2 }, ctx())
-    expect(out.map((o) => o.name.includes('pages') || o.name.includes('page'))).toEqual([true, true, true])
+    expect(out.map((o) => o.name.includes('pages') || o.name.includes('page'))).toEqual([
+      true,
+      true,
+      true,
+    ])
   })
 
   it('reverses page order', async () => {
@@ -52,7 +56,11 @@ describe('organize features (real pdf-lib round-trips)', () => {
 
 describe('security features', () => {
   it('encrypts with a password and the result is unreadable without it', async () => {
-    const out = await protectPdf([await makePdf(1)], { password: 'secret123', allowPrinting: true }, ctx())
+    const out = await protectPdf(
+      [await makePdf(1)],
+      { password: 'secret123', allowPrinting: true },
+      ctx(),
+    )
     const bytes = new Uint8Array(await out[0]!.blob.arrayBuffer())
     const loaded = await PDFDocument.load(bytes, { ignoreEncryption: true })
     expect(loaded.isEncrypted).toBe(true)

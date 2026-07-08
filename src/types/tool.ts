@@ -39,8 +39,24 @@ export type OptionField =
       help?: string
     }
   | { kind: 'text'; key: string; label: string; default: string; placeholder?: string; help?: string }
-  | { kind: 'password'; key: string; label: string; default: string; placeholder?: string; help?: string }
-  | { kind: 'number'; key: string; label: string; default: number; min?: number; max?: number; step?: number; help?: string }
+  | {
+      kind: 'password'
+      key: string
+      label: string
+      default: string
+      placeholder?: string
+      help?: string
+    }
+  | {
+      kind: 'number'
+      key: string
+      label: string
+      default: number
+      min?: number
+      max?: number
+      step?: number
+      help?: string
+    }
   | { kind: 'checkbox'; key: string; label: string; default: boolean; help?: string }
 
 export type OptionValues = Record<string, string | number | boolean>
@@ -79,7 +95,16 @@ export interface ToolDef {
   options?: OptionField[]
   /** Generic tools declare a lazy process function; interactive tools declare a custom page */
   run?: () => Promise<ProcessFn>
-  customPage?: 'organizer' | 'editor' | 'sign' | 'crop' | 'redact' | 'fill-forms' | 'create-forms' | 'compare' | 'viewer'
+  customPage?:
+    | 'organizer'
+    | 'editor'
+    | 'sign'
+    | 'crop'
+    | 'redact'
+    | 'fill-forms'
+    | 'create-forms'
+    | 'compare'
+    | 'viewer'
   /** Extra note rendered on the tool page (limitations, hints) */
   note?: string
   /** For editor aliases: which annotation tool to activate on load */

@@ -32,12 +32,54 @@ export default function App() {
             </Suspense>
           }
         />
-        <Route path="about" element={<Suspense fallback={<Fallback />}><About /></Suspense>} />
-        <Route path="privacy" element={<Suspense fallback={<Fallback />}><Privacy /></Suspense>} />
-        <Route path="terms" element={<Suspense fallback={<Fallback />}><Terms /></Suspense>} />
-        <Route path="contact" element={<Suspense fallback={<Fallback />}><Contact /></Suspense>} />
-        <Route path="faq" element={<Suspense fallback={<Fallback />}><Faq /></Suspense>} />
-        <Route path="*" element={<Suspense fallback={<Fallback />}><NotFound /></Suspense>} />
+        <Route
+          path="about"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <About />
+            </Suspense>
+          }
+        />
+        <Route
+          path="privacy"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <Privacy />
+            </Suspense>
+          }
+        />
+        <Route
+          path="terms"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <Terms />
+            </Suspense>
+          }
+        />
+        <Route
+          path="contact"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <Contact />
+            </Suspense>
+          }
+        />
+        <Route
+          path="faq"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <Faq />
+            </Suspense>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <NotFound />
+            </Suspense>
+          }
+        />
       </Route>
     </Routes>
   )

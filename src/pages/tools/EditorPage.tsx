@@ -74,15 +74,7 @@ interface DragState {
   orig?: Anno
 }
 
-function PageCanvas({
-  doc,
-  pageNo,
-  scale,
-}: {
-  doc: PDFDocumentProxy
-  pageNo: number
-  scale: number
-}) {
+function PageCanvas({ doc, pageNo, scale }: { doc: PDFDocumentProxy; pageNo: number; scale: number }) {
   const host = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   const rendered = useRef(false)
@@ -90,10 +82,9 @@ function PageCanvas({
   useEffect(() => {
     const el = host.current
     if (!el) return
-    const io = new IntersectionObserver(
-      (entries) => entries[0]?.isIntersecting && setVisible(true),
-      { rootMargin: '600px' },
-    )
+    const io = new IntersectionObserver((entries) => entries[0]?.isIntersecting && setVisible(true), {
+      rootMargin: '600px',
+    })
     io.observe(el)
     return () => io.disconnect()
   }, [])
@@ -240,7 +231,10 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
     const rect = e.currentTarget.getBoundingClientRect()
     const meta = pages[Number(e.currentTarget.dataset.page ?? 0)]
     const pw = meta?.w ?? 1
-    return [((e.clientX - rect.left) / rect.width) * pw, ((e.clientY - rect.top) / rect.height) * (meta?.h ?? 1) * (pw / pw)]
+    return [
+      ((e.clientX - rect.left) / rect.width) * pw,
+      ((e.clientY - rect.top) / rect.height) * (meta?.h ?? 1) * (pw / pw),
+    ]
   }
 
   const onPointerDown = (e: React.PointerEvent<SVGSVGElement>, pageIdx: number) => {
@@ -375,8 +369,7 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
           const o = d.orig!
           if (d.kind === 'move') {
             if (isBox(o)) return { ...o, x: o.x + dx, y: o.y + dy }
-            if (isSegment(o))
-              return { ...o, x1: o.x1 + dx, y1: o.y1 + dy, x2: o.x2 + dx, y2: o.y2 + dy }
+            if (isSegment(o)) return { ...o, x1: o.x1 + dx, y1: o.y1 + dy, x2: o.x2 + dx, y2: o.y2 + dy }
             if (isStroke(o)) {
               const pts = [...o.points]
               for (let i = 0; i < pts.length; i += 2) {
@@ -496,19 +489,71 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
     }
     switch (a.kind) {
       case 'whiteout':
-        return <rect key={a.id} x={a.x} y={a.y} width={a.w} height={a.h} fill="#ffffff" stroke={sel ? '#10b981' : '#d4d4d8'} strokeDasharray={sel ? '4 3' : undefined} strokeWidth={1} {...common} />
+        return (
+          <rect
+            key={a.id}
+            x={a.x}
+            y={a.y}
+            width={a.w}
+            height={a.h}
+            fill="#ffffff"
+            stroke={sel ? '#10b981' : '#d4d4d8'}
+            strokeDasharray={sel ? '4 3' : undefined}
+            strokeWidth={1}
+            {...common}
+          />
+        )
       case 'rect':
-        return <rect key={a.id} x={a.x} y={a.y} width={a.w} height={a.h} fill="none" stroke={a.color} strokeWidth={a.strokeWidth ?? 2} {...common} />
+        return (
+          <rect
+            key={a.id}
+            x={a.x}
+            y={a.y}
+            width={a.w}
+            height={a.h}
+            fill="none"
+            stroke={a.color}
+            strokeWidth={a.strokeWidth ?? 2}
+            {...common}
+          />
+        )
       case 'ellipse':
-        return <ellipse key={a.id} cx={a.x + a.w / 2} cy={a.y + a.h / 2} rx={a.w / 2} ry={a.h / 2} fill="none" stroke={a.color} strokeWidth={a.strokeWidth ?? 2} {...common} />
+        return (
+          <ellipse
+            key={a.id}
+            cx={a.x + a.w / 2}
+            cy={a.y + a.h / 2}
+            rx={a.w / 2}
+            ry={a.h / 2}
+            fill="none"
+            stroke={a.color}
+            strokeWidth={a.strokeWidth ?? 2}
+            {...common}
+          />
+        )
       case 'line':
       case 'arrow':
         return (
           <g key={a.id} {...common}>
-            <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke={a.color} strokeWidth={a.strokeWidth} strokeLinecap="round" />
+            <line
+              x1={a.x1}
+              y1={a.y1}
+              x2={a.x2}
+              y2={a.y2}
+              stroke={a.color}
+              strokeWidth={a.strokeWidth}
+              strokeLinecap="round"
+            />
             {a.kind === 'arrow' && <ArrowHead a={a} />}
             {/* fat invisible hit area */}
-            <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="transparent" strokeWidth={Math.max(14, a.strokeWidth * 3)} />
+            <line
+              x1={a.x1}
+              y1={a.y1}
+              x2={a.x2}
+              y2={a.y2}
+              stroke="transparent"
+              strokeWidth={Math.max(14, a.strokeWidth * 3)}
+            />
           </g>
         )
       case 'pen':
@@ -529,27 +574,61 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
       case 'note':
         return (
           <g key={a.id} {...common} onDoubleClick={() => setEditing(a.id)}>
-            <rect x={a.x} y={a.y} width={a.w} height={a.h} fill="#fef3c0" stroke="#d9b84c" strokeWidth={0.8} rx={3} />
+            <rect
+              x={a.x}
+              y={a.y}
+              width={a.w}
+              height={a.h}
+              fill="#fef3c0"
+              stroke="#d9b84c"
+              strokeWidth={0.8}
+              rx={3}
+            />
             <SvgTextBlock a={a} padding={6} />
           </g>
         )
       case 'text':
         return (
           <g key={a.id} {...common} onDoubleClick={() => setEditing(a.id)}>
-            <rect x={a.x} y={a.y} width={a.w} height={a.h} fill="transparent" stroke={sel ? '#10b98188' : 'transparent'} strokeDasharray="4 3" />
+            <rect
+              x={a.x}
+              y={a.y}
+              width={a.w}
+              height={a.h}
+              fill="transparent"
+              stroke={sel ? '#10b98188' : 'transparent'}
+              strokeDasharray="4 3"
+            />
             <SvgTextBlock a={a} padding={0} />
           </g>
         )
       case 'edittext':
         return (
           <g key={a.id} {...common} onDoubleClick={() => setEditing(a.id)}>
-            <rect x={a.x} y={a.y} width={a.w} height={a.h} fill={a.coverColor ?? '#ffffff'} stroke={sel ? '#10b981' : 'transparent'} strokeWidth={sel ? 0.75 : 0} />
+            <rect
+              x={a.x}
+              y={a.y}
+              width={a.w}
+              height={a.h}
+              fill={a.coverColor ?? '#ffffff'}
+              stroke={sel ? '#10b981' : 'transparent'}
+              strokeWidth={sel ? 0.75 : 0}
+            />
             <SvgTextBlock a={a} padding={0} />
           </g>
         )
       case 'image':
         return (
-          <image key={a.id} href={a.dataUrl} x={a.x} y={a.y} width={a.w} height={a.h} preserveAspectRatio="none" {...common} />
+          <image
+            key={a.id}
+            href={a.dataUrl}
+            x={a.x}
+            y={a.y}
+            width={a.w}
+            height={a.h}
+            preserveAspectRatio="none"
+            {...common}
+          />
         )
     }
   }
@@ -560,7 +639,10 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])} wide>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
@@ -607,7 +689,8 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
               aria-pressed={color === c}
               onClick={() => {
                 setColor(c)
-                if (selectedAnno) commit((prev) => prev.map((a) => (a.id === selected ? { ...a, color: c } : a)))
+                if (selectedAnno)
+                  commit((prev) => prev.map((a) => (a.id === selected ? { ...a, color: c } : a)))
               }}
               className={`h-5.5 w-5.5 rounded-full border-2 transition-transform ${color === c ? 'scale-110 border-brand-500' : 'border-white dark:border-neutral-800'}`}
               style={{ backgroundColor: c }}
@@ -617,32 +700,67 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
 
         <label className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
           Stroke
-          <select className="input-base w-14 px-1.5 py-1 text-xs" value={strokeWidth} onChange={(e) => setStrokeWidth(Number(e.target.value))} aria-label="Stroke width">
+          <select
+            className="input-base w-14 px-1.5 py-1 text-xs"
+            value={strokeWidth}
+            onChange={(e) => setStrokeWidth(Number(e.target.value))}
+            aria-label="Stroke width"
+          >
             {[1, 2, 3, 5, 8].map((w) => (
-              <option key={w} value={w}>{w}</option>
+              <option key={w} value={w}>
+                {w}
+              </option>
             ))}
           </select>
         </label>
         <label className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
           Text
-          <select className="input-base w-14 px-1.5 py-1 text-xs" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} aria-label="Font size">
+          <select
+            className="input-base w-14 px-1.5 py-1 text-xs"
+            value={fontSize}
+            onChange={(e) => setFontSize(Number(e.target.value))}
+            aria-label="Font size"
+          >
             {[10, 12, 14, 16, 20, 24, 32].map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </label>
 
         <span className="mx-1 h-6 w-px bg-neutral-200 dark:bg-neutral-700" aria-hidden />
 
-        <button type="button" className="btn-ghost" onClick={undo} disabled={history.length === 0} aria-label="Undo">
+        <button
+          type="button"
+          className="btn-ghost"
+          onClick={undo}
+          disabled={history.length === 0}
+          aria-label="Undo"
+        >
           <Undo2 className="h-4 w-4" aria-hidden />
         </button>
-        <button type="button" className="btn-ghost" onClick={redo} disabled={redoStack.length === 0} aria-label="Redo">
+        <button
+          type="button"
+          className="btn-ghost"
+          onClick={redo}
+          disabled={redoStack.length === 0}
+          aria-label="Redo"
+        >
           <Redo2 className="h-4 w-4" aria-hidden />
         </button>
 
-        <button type="button" className="btn-primary ml-auto" onClick={() => void exportPdf()} disabled={busy || !file}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+        <button
+          type="button"
+          className="btn-primary ml-auto"
+          onClick={() => void exportPdf()}
+          disabled={busy || !file}
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden />
+          )}
           Apply & download
         </button>
       </div>
@@ -651,7 +769,11 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
       {doc && (
         <div className="space-y-6 overflow-x-auto pb-8">
           {pages.map((meta, i) => (
-            <div key={i} className="relative mx-auto shadow-lg ring-1 ring-black/10" style={{ width: meta.w * scale, height: meta.h * scale }}>
+            <div
+              key={i}
+              className="relative mx-auto shadow-lg ring-1 ring-black/10"
+              style={{ width: meta.w * scale, height: meta.h * scale }}
+            >
               <PageCanvas doc={doc} pageNo={i + 1} scale={scale} />
               <svg
                 data-page={i}
@@ -762,7 +884,11 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
           const reader = new FileReader()
           reader.onload = () => {
             const img = new Image()
-            img.onload = () => setPendingImage({ dataUrl: String(reader.result), aspect: img.naturalWidth / img.naturalHeight })
+            img.onload = () =>
+              setPendingImage({
+                dataUrl: String(reader.result),
+                aspect: img.naturalWidth / img.naturalHeight,
+              })
             img.src = String(reader.result)
           }
           reader.readAsDataURL(f)
@@ -797,7 +923,11 @@ function pairs(points: number[]): string {
   return out.join(' ')
 }
 
-function ArrowHead({ a }: { a: { x1: number; y1: number; x2: number; y2: number; strokeWidth: number; color: string } }) {
+function ArrowHead({
+  a,
+}: {
+  a: { x1: number; y1: number; x2: number; y2: number; strokeWidth: number; color: string }
+}) {
   const angle = Math.atan2(a.y2 - a.y1, a.x2 - a.x1)
   const len = Math.max(9, a.strokeWidth * 4)
   return (

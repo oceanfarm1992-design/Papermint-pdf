@@ -125,8 +125,8 @@ export default function FileDropzone({ accept, multiple, onFiles, compact }: Pro
         </p>
         {!compact && (
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            or <span className="font-medium text-brand-600 dark:text-brand-400">browse files</span> · paste
-            with Ctrl+V {multiple && '· folders supported'}
+            or <span className="font-medium text-brand-700 dark:text-brand-400">browse files</span> ·
+            paste with Ctrl+V {multiple && '· folders supported'}
           </p>
         )}
       </div>
@@ -137,14 +137,12 @@ export default function FileDropzone({ accept, multiple, onFiles, compact }: Pro
             {rejected}
           </p>
         ) : (
-          <span className="text-xs text-neutral-400">Max recommended size: {formatBytes(512 * 1024 * 1024)}</span>
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            Max recommended size: {formatBytes(512 * 1024 * 1024)}
+          </span>
         )}
         {multiple && (
-          <button
-            type="button"
-            className="btn-ghost text-xs"
-            onClick={() => folderRef.current?.click()}
-          >
+          <button type="button" className="btn-ghost text-xs" onClick={() => folderRef.current?.click()}>
             <FolderOpen className="h-3.5 w-3.5" aria-hidden /> Select a folder
           </button>
         )}

@@ -269,7 +269,9 @@ export default function PdfPreviewModal({ file, onClose }: Props) {
                   {i + 1}
                 </div>
               )}
-              <span className="block bg-black/40 py-0.5 text-center text-[10px] text-white/70">{i + 1}</span>
+              <span className="block bg-black/40 py-0.5 text-center text-[10px] text-white/70">
+                {i + 1}
+              </span>
             </button>
           ))}
         </aside>

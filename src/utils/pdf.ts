@@ -65,7 +65,9 @@ export async function openWithPdfLib(file: File | Uint8Array, password?: string)
     throw err
   }
   if (doc.isEncrypted && !password) {
-    throw new UserError('This PDF is password-protected. Unlock it first (Security → Unlock PDF), or use a tool that asks for the password.')
+    throw new UserError(
+      'This PDF is password-protected. Unlock it first (Security → Unlock PDF), or use a tool that asks for the password.',
+    )
   }
   return doc
 }
@@ -86,17 +88,28 @@ export async function renderPageToCanvas(page: PDFPageProxy, scale: number): Pro
   return canvas
 }
 
-export function canvasToBlob(canvas: HTMLCanvasElement, type = 'image/png', quality?: number): Promise<Blob> {
+export function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type = 'image/png',
+  quality?: number,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new UserError('The browser could not encode the image — the page may be too large.'))),
+      (b) =>
+        b
+          ? resolve(b)
+          : reject(new UserError('The browser could not encode the image — the page may be too large.')),
       type,
       quality,
     )
   })
 }
 
-export async function canvasToBytes(canvas: HTMLCanvasElement, type = 'image/png', quality?: number): Promise<Uint8Array> {
+export async function canvasToBytes(
+  canvas: HTMLCanvasElement,
+  type = 'image/png',
+  quality?: number,
+): Promise<Uint8Array> {
   const blob = await canvasToBlob(canvas, type, quality)
   return new Uint8Array(await blob.arrayBuffer())
 }
