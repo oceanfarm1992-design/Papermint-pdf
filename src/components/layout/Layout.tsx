@@ -2,7 +2,8 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Heart, Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme, type Theme } from '@/hooks/useTheme'
-import { APP_VERSION, DONATE_LINKS } from '@/data/meta'
+import { APP_VERSION, CRYPTO_WALLETS, DONATE_LINKS } from '@/data/meta'
+import CryptoDonate from '@/components/CryptoDonate'
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -60,7 +61,7 @@ export default function Layout() {
         Skip to content
       </a>
 
-      {DONATE_LINKS.length > 0 && (
+      {(DONATE_LINKS.length > 0 || CRYPTO_WALLETS.length > 0) && (
         <div className="border-b border-rose-200/60 bg-rose-50/70 dark:border-rose-500/20 dark:bg-rose-500/5">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-1.5 text-sm">
             <span className="inline-flex items-center gap-1.5 font-medium text-rose-700 dark:text-rose-300">
@@ -77,6 +78,7 @@ export default function Layout() {
                 {d.label}
               </a>
             ))}
+            <CryptoDonate />
           </div>
         </div>
       )}
