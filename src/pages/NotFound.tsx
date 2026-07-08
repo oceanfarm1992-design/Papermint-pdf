@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useSeo } from '@/hooks/useSeo'
 
 export default function NotFound() {
+  useSeo({ title: 'Page not found — Privacy PDF Tools', noindex: true })
   return (
     <div className="mx-auto max-w-lg px-4 py-24 text-center">
       <p className="text-6xl font-bold text-neutral-200 dark:text-neutral-700">404</p>

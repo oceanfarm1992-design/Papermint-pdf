@@ -1,5 +1,6 @@
 import { CONTACT_EMAIL } from '@/data/meta'
 import { TOOLS } from '@/data/tools'
+import { useSeo, useJsonLd } from '@/hooks/useSeo'
 
 function Page({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -13,6 +14,12 @@ function Page({ title, children }: { title: string; children: React.ReactNode })
 }
 
 export function About() {
+  useSeo({
+    title: 'About — Privacy PDF Tools',
+    description:
+      'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, no tracking. Learn how and why.',
+    path: '/about',
+  })
   return (
     <Page title="About Privacy PDF Tools">
       <p>
@@ -45,6 +52,12 @@ export function About() {
 }
 
 export function Privacy() {
+  useSeo({
+    title: 'Privacy Policy — Privacy PDF Tools',
+    description:
+      'Our privacy policy: no uploads, no accounts, no tracking, no cookies. Your PDF files never leave your device — everything runs locally in your browser.',
+    path: '/privacy',
+  })
   return (
     <Page title="Privacy Policy">
       <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
@@ -80,8 +93,8 @@ export function Privacy() {
       </p>
       <h2>Hosting</h2>
       <p>
-        The static site is delivered by Cloudflare Pages, which may log standard web requests (IP, URL,
-        user agent) to operate its network, like any website host. Your documents are never part of any
+        The static site is delivered by Cloudflare, which may log standard web requests (IP, URL, user
+        agent) to operate its network, like any website host. Your documents are never part of any
         request.
       </p>
     </Page>
@@ -89,6 +102,12 @@ export function Privacy() {
 }
 
 export function Terms() {
+  useSeo({
+    title: 'Terms of Use — Privacy PDF Tools',
+    description:
+      'Terms of use for Privacy PDF Tools — free, provided as-is, MIT-licensed PDF tools that run entirely in your browser.',
+    path: '/terms',
+  })
   return (
     <Page title="Terms of Use">
       <p>Privacy PDF Tools is provided free of charge, as is, in the hope that it is useful.</p>
@@ -111,6 +130,12 @@ export function Terms() {
 }
 
 export function Contact() {
+  useSeo({
+    title: 'Contact — Privacy PDF Tools',
+    description:
+      'Questions, bug reports or ideas about Privacy PDF Tools? Reach us by email — no forms, no accounts.',
+    path: '/contact',
+  })
   return (
     <Page title="Contact">
       <p>
@@ -164,7 +189,24 @@ const FAQS: [string, string][] = [
   ],
 ]
 
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(([question, answer]) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+}
+
 export function Faq() {
+  useSeo({
+    title: 'FAQ — Privacy PDF Tools',
+    description:
+      'Answers about privacy, file size limits, OCR downloads, PDF encryption and mobile support for Privacy PDF Tools.',
+    path: '/faq',
+  })
+  useJsonLd(FAQ_SCHEMA)
   return (
     <Page title="Frequently Asked Questions">
       <div className="space-y-3">

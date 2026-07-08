@@ -4,6 +4,7 @@ import { AlertTriangle, ArrowLeft, Eye, Play, Trash2 } from 'lucide-react'
 import { toolBySlug, CATEGORIES } from '@/data/tools'
 import type { OptionValues, OutputFile } from '@/types/tool'
 import { RECENTS_KEY, useLocalList } from '@/hooks/useLocalList'
+import { useSeo } from '@/hooks/useSeo'
 import FileDropzone from '@/components/FileDropzone'
 import OptionsForm from '@/components/OptionsForm'
 import ProgressPanel from '@/components/ProgressPanel'
@@ -58,14 +59,18 @@ export default function ToolPage() {
   }, [defaults, slug])
 
   useEffect(() => {
-    if (tool) {
-      addRecent(tool.slug)
-      document.title = `${tool.name} — Privacy PDF Tools`
-    }
-    return () => {
-      document.title = 'Privacy PDF Tools — Free & Private, Never Upload Your Files'
-    }
+    if (tool) addRecent(tool.slug)
   }, [tool, addRecent])
+
+  useSeo(
+    tool
+      ? {
+          title: `${tool.name} — Privacy PDF Tools`,
+          description: `${tool.description} 100% free and private — runs in your browser, no uploads, no signup.`,
+          path: `/tool/${tool.slug}`,
+        }
+      : { title: 'Page not found — Privacy PDF Tools', noindex: true },
+  )
 
   if (!tool) return <NotFound />
 
