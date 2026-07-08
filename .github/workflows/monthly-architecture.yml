@@ -1,0 +1,76 @@
+# Monthly AI architecture review — Claude reads the whole repository and
+# writes an architectural assessment (tech debt, scalability, bundle strategy,
+# dependency consolidation, refactoring opportunities), then an issue is
+# opened with the report. Self-skips when ANTHROPIC_API_KEY is absent.
+name: Monthly Architecture Review
+
+on:
+  schedule:
+    - cron: '0 6 1 * *' # 1st of the month, 06:00 UTC
+  workflow_dispatch:
+
+env:
+  HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    name: Architecture review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Skip notice when no API key configured
+        if: env.HAS_KEY != 'true'
+        run: echo "::notice::ANTHROPIC_API_KEY secret not set — architecture review skipped."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_KEY == 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_KEY == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (so the reviewer can build/measure)
+        if: env.HAS_KEY == 'true'
+        run: npm ci
+
+      - name: Claude architecture review
+        if: env.HAS_KEY == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are performing the monthly architecture review of Papermint, a
+            browser-only PDF toolkit (React 19 + Vite + TS strict + Tailwind 4,
+            deployed on Cloudflare Workers static assets). Privacy constraint:
+            all processing is local; nothing may introduce uploads.
+
+            Study the repository (src/ structure, the tool registry in
+            src/data/tools.ts, features/, utils/, workflows in .github/) and
+            write a report to the file `architecture-review.md` covering:
+              1. Technical debt — concrete, file-level, ranked by cost.
+              2. Scalability of the tool-registry pattern as tools grow.
+              3. Performance bottlenecks (main-thread PDF work, chunking,
+                 lazy-loading strategy) — run `npm run build` and read the
+                 output sizes to ground claims.
+              4. Build & bundle optimization opportunities.
+              5. Dependency consolidation / removal candidates.
+              6. Folder organization improvements.
+              7. Top 5 refactoring recommendations with effort estimates.
+            Be specific: cite real files and real measurements. No generic advice.
+          claude_args: '--max-turns 50 --allowedTools "Read,Glob,Grep,Bash(npm run build),Bash(npm ls:*),Write"'
+
+      - name: Open review issue
+        if: env.HAS_KEY == 'true'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: '🏛️ Monthly architecture review'
+          content-filepath: architecture-review.md
+          labels: architecture, report

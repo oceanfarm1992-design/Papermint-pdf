@@ -1,0 +1,108 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Papermint dependency automation — grouped, risk-labelled PRs; never auto-merged. Every PR must pass the full CI quality-gate pipeline before a human merges it.",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommitsDisabled",
+    ":prHourlyLimitNone"
+  ],
+  "timezone": "Asia/Colombo",
+  "schedule": ["before 8am on monday"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 6,
+  "rangeStrategy": "bump",
+  "minimumReleaseAge": "3 days",
+  "automerge": false,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "priority-critical"],
+    "schedule": ["at any time"],
+    "minimumReleaseAge": null
+  },
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 8am on the first day of the month"]
+  },
+  "packageRules": [
+    {
+      "description": "React ecosystem",
+      "groupName": "react ecosystem",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom",
+        "react-router-dom",
+        "react-hook-form",
+        "@vitejs/plugin-react"
+      ],
+      "labels": ["dependencies", "react"]
+    },
+    {
+      "description": "PDF / document processing — the core of the product; review carefully",
+      "groupName": "pdf & document libraries",
+      "matchPackageNames": ["@cantoo/pdf-lib", "pdfjs-dist", "jszip"],
+      "labels": ["dependencies", "pdf-core", "needs-careful-review"]
+    },
+    {
+      "description": "OCR and image processing",
+      "groupName": "ocr & image libraries",
+      "matchPackageNames": ["tesseract.js", "browser-image-compression"],
+      "labels": ["dependencies", "ocr-image"]
+    },
+    {
+      "description": "UI libraries",
+      "groupName": "ui libraries",
+      "matchPackageNames": ["framer-motion", "lucide-react"],
+      "labels": ["dependencies", "ui"]
+    },
+    {
+      "description": "Build toolchain",
+      "groupName": "build tools",
+      "matchPackageNames": [
+        "vite",
+        "typescript",
+        "tailwindcss",
+        "@tailwindcss/vite",
+        "@types/node",
+        "rollup-plugin-visualizer"
+      ],
+      "labels": ["dependencies", "build"]
+    },
+    {
+      "description": "Testing stack",
+      "groupName": "testing libraries",
+      "matchPackageNames": [
+        "vitest",
+        "@vitest/coverage-v8",
+        "@playwright/test",
+        "@axe-core/playwright"
+      ],
+      "labels": ["dependencies", "testing"]
+    },
+    {
+      "description": "Lint / format tools",
+      "groupName": "dev tooling",
+      "matchPackageNames": ["oxlint", "prettier"],
+      "labels": ["dependencies", "tooling"]
+    },
+    {
+      "description": "Major updates always get their own PR with a warning label — never grouped with anything else",
+      "matchUpdateTypes": ["major"],
+      "groupName": null,
+      "labels": ["dependencies", "major-update", "breaking-risk"],
+      "prBodyNotes": [
+        "⚠️ **Major version bump.** Read the migration guide before merging. The AI dependency-review job will post a changelog/breaking-change summary on this PR."
+      ]
+    },
+    {
+      "description": "pdfjs-dist majors have repeatedly shipped breaking worker/API changes for this app",
+      "matchPackageNames": ["pdfjs-dist"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "major-update", "breaking-risk", "pdf-core"],
+      "minimumReleaseAge": "14 days"
+    }
+  ]
+}

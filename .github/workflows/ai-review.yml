@@ -1,0 +1,102 @@
+# AI code review (Claude) — two reviewers:
+#  1. Every PR gets an architecture/correctness/security/a11y review.
+#  2. Renovate dependency PRs additionally get a dependency-quality review:
+#     changelog digest, breaking changes, migration steps, risk verdict.
+# Both jobs no-op gracefully when the ANTHROPIC_API_KEY secret is not set.
+name: AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+env:
+  HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+
+permissions:
+  contents: read
+
+jobs:
+  code-review:
+    name: AI code review
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Skip notice when no API key configured
+        if: env.HAS_KEY != 'true'
+        run: echo "::notice::ANTHROPIC_API_KEY secret not set — AI review skipped."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_KEY == 'true'
+        with:
+          fetch-depth: 0
+
+      - name: Claude review
+        if: env.HAS_KEY == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Review this pull request as a senior reviewer for Papermint, a
+            browser-only PDF toolkit (React 19 + Vite + TypeScript strict +
+            Tailwind v4). Non-negotiable project invariants:
+              - Files are NEVER uploaded anywhere; no network calls during
+                document processing (privacy is the core product promise).
+              - No new heavy dependencies without clear justification —
+                bundle size is budgeted in CI.
+              - pdf.js v6 and @cantoo/pdf-lib have sharp edges (transferred
+                ArrayBuffers, encryption quirks) — scrutinize their usage.
+            Review the diff for: correctness bugs, security issues (XSS sinks,
+            unsafe URL/blob handling), accessibility regressions, performance
+            problems (main-thread blocking on large PDFs), maintainability,
+            and violations of the invariants above.
+            Post concise inline comments only where you are confident there is
+            a real problem, and finish with a short summary comment including
+            a verdict: APPROVE / NEEDS CHANGES.
+          claude_args: '--max-turns 30'
+
+  dependency-review:
+    name: AI dependency-update review
+    if: github.event.pull_request.draft == false && (startsWith(github.head_ref, 'renovate/') || github.actor == 'renovate[bot]' || github.actor == 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Skip notice when no API key configured
+        if: env.HAS_KEY != 'true'
+        run: echo "::notice::ANTHROPIC_API_KEY secret not set — AI dependency review skipped."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_KEY == 'true'
+
+      - name: Claude dependency-quality review
+        if: env.HAS_KEY == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            This is an automated dependency-update PR for Papermint (browser-only
+            PDF toolkit). For EACH package being updated, research and report:
+              1. Why the release exists (changelog / release-notes digest).
+              2. Breaking changes and deprecations, especially anything touching
+                 browser APIs, Web Workers, WASM, or bundler integration.
+              3. Security advisories fixed or introduced.
+              4. Maintenance health: release cadence, open issues, is it
+                 deprecated or archived?
+              5. License changes.
+              6. Migration steps this repo would need (check actual usage in
+                 src/ before claiming impact).
+            Then post ONE summary comment on the PR with a table:
+            package | from → to | risk (safe/medium/high/breaking) | action.
+            End with a recommendation: MERGE AFTER CI / NEEDS MIGRATION WORK /
+            DO NOT MERGE, and list concrete migration steps if any.
+            Use WebFetch/WebSearch for changelogs and `npm view` for registry
+            metadata. Never modify code.
+          claude_args: '--max-turns 40 --allowedTools "WebFetch,WebSearch,Bash(npm view:*),Bash(gh pr view:*),Bash(gh pr diff:*)"'

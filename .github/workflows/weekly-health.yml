@@ -1,0 +1,73 @@
+# Weekly maintenance — dependency & repository health report.
+# Scans every dependency (outdated / deprecated / duplicated / licenses),
+# summarizes npm audit, snapshots current bundle sizes, and opens (or updates)
+# a GitHub issue with the full report. Artifacts keep the history.
+name: Weekly Health
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    name: Dependency & bundle health
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Dependency health report
+        id: health
+        continue-on-error: true # exit codes 2/3 signal findings, not failure
+        run: node scripts/dependency-health.mjs --md dependency-health.md
+
+      - name: Bundle size snapshot
+        run: |
+          npm run build
+          node scripts/bundle-report.mjs --dist dist --out bundle-history.json --md bundle-snapshot.md
+          {
+            echo ""
+            echo "## Bundle size snapshot"
+            echo ""
+            cat bundle-snapshot.md
+          } >> dependency-health.md
+
+      - name: Publish to job summary
+        run: cat dependency-health.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report artifacts (history)
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-report-${{ github.run_number }}
+          path: |
+            dependency-health.md
+            dependency-health.json
+            bundle-history.json
+          retention-days: 90
+
+      - name: Open/update the health issue
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: '🩺 Weekly health report — ${{ github.run_number }}'
+          content-filepath: dependency-health.md
+          labels: maintenance, report
+
+      - name: Escalate critical findings
+        if: steps.health.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.warning('Dependency health script exited non-zero: deprecated packages or critical vulnerabilities found — see the health issue.')

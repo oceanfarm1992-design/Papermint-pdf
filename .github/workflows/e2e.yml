@@ -1,0 +1,63 @@
+# End-to-end tests — real browsers (Chromium, Firefox, WebKit), desktop and
+# mobile viewports, accessibility scans (axe-core), a real PDF-merge flow that
+# also asserts zero external network calls, and a Chromium memory canary.
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Chromium (desktop + mobile)
+            browser: chromium
+            projects: --project=chromium --project=mobile-chrome
+          - name: Firefox
+            browser: firefox
+            projects: --project=firefox
+          - name: WebKit (desktop + mobile Safari)
+            browser: webkit
+            projects: --project=webkit --project=mobile-safari
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Run Playwright tests
+        run: npx playwright test ${{ matrix.projects }}
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

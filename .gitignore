@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Test & analysis output
+coverage
+playwright-report
+test-results
+bundle-report.json
+bundle-report.md
+dependency-health.md
+dependency-health.json
+
 # Claude Code local machine settings (permissions allowlist) — not for sharing
 .claude/settings.local.json
 

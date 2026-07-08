@@ -1,0 +1,33 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npx vite preview --port 4173 --strictPort",
+      "startServerReadyPattern": "Local:",
+      "url": [
+        "http://localhost:4173/",
+        "http://localhost:4173/tool/merge-pdf",
+        "http://localhost:4173/tool/compress-pdf"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop",
+        "skipAudits": ["uses-http2", "is-on-https"]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
+        "categories:seo": ["error", { "minScore": 0.9 }],
+        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 3000 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
+        "interactive": ["warn", { "maxNumericValue": 4000 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}
