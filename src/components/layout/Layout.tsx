@@ -59,6 +59,28 @@ export default function Layout() {
       >
         Skip to content
       </a>
+
+      {DONATE_LINKS.length > 0 && (
+        <div className="border-b border-rose-200/60 bg-rose-50/70 dark:border-rose-500/20 dark:bg-rose-500/5">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-1.5 text-sm">
+            <span className="inline-flex items-center gap-1.5 font-medium text-rose-700 dark:text-rose-300">
+              <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Love Papermint? Support it:
+            </span>
+            {DONATE_LINKS.map((d) => (
+              <a
+                key={d.url}
+                href={d.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center rounded-full border border-rose-300 bg-white/70 px-2.5 py-0.5 font-medium text-rose-700 transition-colors hover:bg-white dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
+              >
+                {d.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-md dark:border-neutral-800 dark:bg-[#0c0d10]/80">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
@@ -92,27 +114,7 @@ export default function Layout() {
 
       <footer className="border-t border-neutral-200/70 py-8 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <p>🔒 Files are processed locally in your browser — nothing is ever uploaded.</p>
-            {DONATE_LINKS.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 font-medium text-rose-600 dark:text-rose-400">
-                  <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Support:
-                </span>
-                {DONATE_LINKS.map((d) => (
-                  <a
-                    key={d.url}
-                    href={d.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="inline-flex items-center rounded-full border border-rose-300 bg-rose-50 px-3 py-1 font-medium text-rose-700 transition-colors hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
-                  >
-                    {d.label}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+          <p>🔒 Files are processed locally in your browser — nothing is ever uploaded.</p>
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link to="/privacy" className="hover:text-neutral-900 dark:hover:text-white">Privacy</Link>
             <Link to="/terms" className="hover:text-neutral-900 dark:hover:text-white">Terms</Link>
