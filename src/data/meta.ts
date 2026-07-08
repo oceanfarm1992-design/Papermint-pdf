@@ -3,5 +3,8 @@ export const APP_NAME = 'Papermint'
 export const CONTACT_EMAIL = 'mmw123450@gmail.com'
 export const SITE_URL = 'https://papermint.pages.dev'
 
-// Support / donate link. Set to an empty string to hide the Support button everywhere.
-export const DONATE_URL = 'https://buymeacoffee.com/sareefirshm'
+// Support / donate links shown in the footer. Empty the array to hide them.
+export const DONATE_LINKS: { label: string; url: string }[] = [
+  { label: 'Buy me a coffee', url: 'https://buymeacoffee.com/sareefirshm' },
+  { label: 'PayPal', url: 'https://www.paypal.me/trendbazaar585' },
+]

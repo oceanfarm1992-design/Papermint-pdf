@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Heart, Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme, type Theme } from '@/hooks/useTheme'
-import { APP_VERSION, DONATE_URL } from '@/data/meta'
+import { APP_VERSION, DONATE_LINKS } from '@/data/meta'
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -92,17 +92,25 @@ export default function Layout() {
 
       <footer className="border-t border-neutral-200/70 py-8 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4">
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <p>🔒 Files are processed locally in your browser — nothing is ever uploaded.</p>
-            {DONATE_URL && (
-              <a
-                href={DONATE_URL}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-flex items-center gap-1.5 rounded-full border border-rose-300 bg-rose-50 px-3 py-1 font-medium text-rose-700 transition-colors hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
-              >
-                <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Support this project
-              </a>
+            {DONATE_LINKS.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 font-medium text-rose-600 dark:text-rose-400">
+                  <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Support:
+                </span>
+                {DONATE_LINKS.map((d) => (
+                  <a
+                    key={d.url}
+                    href={d.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center rounded-full border border-rose-300 bg-rose-50 px-3 py-1 font-medium text-rose-700 transition-colors hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
+                  >
+                    {d.label}
+                  </a>
+                ))}
+              </div>
             )}
           </div>
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
