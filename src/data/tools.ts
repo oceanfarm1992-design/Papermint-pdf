@@ -1,0 +1,573 @@
+import type { Category, ToolDef } from '@/types/tool'
+import {
+  AlignLeft,
+  ArrowUpDown,
+  BookOpen,
+  Combine,
+  Copy,
+  Crop,
+  Diff,
+  Eraser,
+  FileCode,
+  FileDown,
+  FileImage,
+  FileInput,
+  FileOutput,
+  FileSearch,
+  FileSpreadsheet,
+  FileText,
+  FileType,
+  FileX,
+  FolderInput,
+  Hash,
+  Highlighter,
+  ImageDown,
+  ImagePlus,
+  Images,
+  KeyRound,
+  Layers,
+  ListOrdered,
+  ListTree,
+  Lock,
+  Minimize2,
+  MonitorPlay,
+  PanelTop,
+  PenLine,
+  PenTool,
+  Pencil,
+  Presentation,
+  RotateCw,
+  ScanSearch,
+  ScanText,
+  Scissors,
+  Shapes,
+  Shield,
+  Sparkles,
+  SquareDashedBottom,
+  Stamp,
+  StickyNote,
+  Tags,
+  TextCursorInput,
+  Trash2,
+  Type,
+  Unlock,
+  Wand2,
+} from 'lucide-react'
+
+const PDF = ['application/pdf', '.pdf']
+const IMAGES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/bmp', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp']
+
+export const CATEGORIES: Category[] = [
+  { id: 'organize', name: 'Organize PDF', description: 'Merge, split, reorder and manage pages', icon: Layers, accent: 'bg-sky-500/10 text-sky-600 dark:text-sky-400' },
+  { id: 'edit', name: 'Edit PDF', description: 'Annotate, draw, watermark and number pages', icon: PenLine, accent: 'bg-violet-500/10 text-violet-600 dark:text-violet-400' },
+  { id: 'convert-from', name: 'Convert from PDF', description: 'Turn PDFs into Word, images, text and more', icon: FileOutput, accent: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
+  { id: 'convert-to', name: 'Convert to PDF', description: 'Create PDFs from images and documents', icon: FileInput, accent: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
+  { id: 'ocr', name: 'OCR', description: 'Recognize text in scans and images', icon: ScanText, accent: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' },
+  { id: 'security', name: 'Security', description: 'Protect, unlock, redact and clean metadata', icon: Shield, accent: 'bg-rose-500/10 text-rose-600 dark:text-rose-400' },
+  { id: 'compress', name: 'Compression', description: 'Shrink PDFs and images', icon: Minimize2, accent: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
+  { id: 'forms', name: 'Forms & Signing', description: 'Fill, create and sign documents', icon: TextCursorInput, accent: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
+  { id: 'images', name: 'Images', description: 'Extract, compress and enhance images', icon: Images, accent: 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400' },
+  { id: 'compare', name: 'Compare', description: 'Spot differences between two PDFs', icon: Diff, accent: 'bg-teal-500/10 text-teal-600 dark:text-teal-400' },
+  { id: 'ai', name: 'Smart Tools', description: 'Local text analysis — no cloud AI', icon: Sparkles, accent: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
+]
+
+export const TOOLS: ToolDef[] = [
+  // ───────────────────────── Organize ─────────────────────────
+  {
+    slug: 'merge-pdf', name: 'Merge PDF', description: 'Combine multiple PDFs into a single document, in the order you choose.',
+    category: 'organize', icon: Combine, keywords: ['combine', 'join', 'concat'], accept: PDF, multiple: true, minFiles: 2,
+    speed: 'instant', offline: true,
+    run: () => import('@/features/organize').then((m) => m.merge),
+  },
+  {
+    slug: 'split-pdf', name: 'Split PDF', description: 'Split by page ranges, every N pages, or into single pages.',
+    category: 'organize', icon: Scissors, keywords: ['divide', 'ranges', 'pages'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'select', key: 'mode', label: 'Split mode', default: 'ranges', choices: [
+        { value: 'ranges', label: 'Custom ranges' },
+        { value: 'every', label: 'Every N pages' },
+        { value: 'single', label: 'Every page separately' },
+      ] },
+      { kind: 'text', key: 'ranges', label: 'Ranges (e.g. 1-3, 4, 7-9)', default: '', placeholder: '1-3, 4, 7-9', help: 'Used with “Custom ranges”. Each range becomes its own PDF.' },
+      { kind: 'number', key: 'every', label: 'Chunk size (N)', default: 2, min: 1, help: 'Used with “Every N pages”.' },
+    ],
+    run: () => import('@/features/organize').then((m) => m.split),
+  },
+  {
+    slug: 'organize-pdf', name: 'Rearrange Pages', description: 'Drag to reorder, rotate, duplicate or delete pages visually.',
+    category: 'organize', icon: ListOrdered, keywords: ['reorder', 'organize', 'move', 'sort', 'arrange'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'organizer',
+  },
+  {
+    slug: 'extract-pages', name: 'Extract Pages', description: 'Pull out only the pages you need into a new PDF.',
+    category: 'organize', icon: FileOutput, keywords: ['select', 'pick', 'pages'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'text', key: 'pages', label: 'Pages to extract', default: '', placeholder: '1, 3, 5-8' },
+      { kind: 'checkbox', key: 'separate', label: 'Save each page as a separate PDF', default: false },
+    ],
+    pageSelect: { key: 'pages', verb: 'extract' },
+    run: () => import('@/features/organize').then((m) => m.extractPages),
+  },
+  {
+    slug: 'delete-pages', name: 'Delete Pages', description: 'Remove unwanted pages from a PDF.',
+    category: 'organize', icon: Trash2, keywords: ['remove', 'pages'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [{ kind: 'text', key: 'pages', label: 'Pages to delete', default: '', placeholder: '2, 4-6' }],
+    pageSelect: { key: 'pages', verb: 'delete' },
+    run: () => import('@/features/organize').then((m) => m.deletePages),
+  },
+  {
+    slug: 'rotate-pdf', name: 'Rotate Pages', description: 'See every page and rotate them visually — one, several, or all at once.',
+    category: 'organize', icon: RotateCw, keywords: ['turn', 'orientation', 'landscape', 'portrait'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'organizer',
+    note: 'Click the rotate button on any page to turn it 90°, or use “Rotate all”. Preview updates live before you download.',
+  },
+  {
+    slug: 'duplicate-pages', name: 'Duplicate Pages', description: 'Repeat selected pages, right after the originals.',
+    category: 'organize', icon: Copy, keywords: ['copy', 'repeat'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [{ kind: 'text', key: 'pages', label: 'Pages to duplicate (empty = all)', default: '', placeholder: '1, 3-5' }],
+    pageSelect: { key: 'pages', emptyMeansAll: true, verb: 'duplicate' },
+    run: () => import('@/features/organize').then((m) => m.duplicatePages),
+  },
+  {
+    slug: 'reverse-pages', name: 'Reverse Pages', description: 'Flip page order — or drag pages into any arrangement you like.',
+    category: 'organize', icon: ArrowUpDown, keywords: ['invert', 'backwards', 'order', 'reorder', 'drag'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'organizer',
+    note: 'Click “Reverse order” to flip the whole document, or drag individual pages to reorder them, then download.',
+  },
+
+  // ───────────────────────── Edit ─────────────────────────
+  {
+    slug: 'edit-pdf', name: 'Edit PDF', description: 'Add text, draw, highlight, add shapes, notes, images and whiteout.',
+    category: 'edit', icon: PenLine, keywords: ['annotate', 'modify', 'text'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'editor', editorTool: 'select',
+    note: 'Use “Edit existing text” to click any line and retype it — the original is covered with white and re-drawn in a matching font (serif / sans / mono), size and position. Note: the covered text stays in the hidden text layer, so for sensitive changes use Redact to remove it permanently. Exotic embedded fonts and non-Latin scripts (e.g. Arabic) are approximated with the closest standard font.',
+  },
+  { slug: 'add-text', name: 'Add Text', description: 'Type new text anywhere on any page.', category: 'edit', icon: Type, keywords: ['insert', 'write', 'textbox'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'text' },
+  { slug: 'draw-pdf', name: 'Draw', description: 'Freehand pen for sketches, corrections and marks.', category: 'edit', icon: Pencil, keywords: ['pen', 'freehand', 'sketch', 'ink'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'pen' },
+  { slug: 'highlight-pdf', name: 'Highlight', description: 'Semi-transparent marker for emphasizing content.', category: 'edit', icon: Highlighter, keywords: ['marker', 'emphasis'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'highlight' },
+  { slug: 'shapes-pdf', name: 'Shapes', description: 'Rectangles, ellipses, lines and arrows.', category: 'edit', icon: Shapes, keywords: ['rectangle', 'ellipse', 'line', 'arrow'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'rect' },
+  { slug: 'sticky-notes', name: 'Sticky Notes', description: 'Drop small yellow notes onto pages.', category: 'edit', icon: StickyNote, keywords: ['comment', 'note', 'annotation'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'note' },
+  { slug: 'whiteout-pdf', name: 'Whiteout', description: 'Cover content with white blocks, then type over it.', category: 'edit', icon: Eraser, keywords: ['erase', 'cover', 'correct'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'whiteout' },
+  { slug: 'add-images', name: 'Add Images', description: 'Place PNG, JPG or WebP images onto pages.', category: 'edit', icon: ImagePlus, keywords: ['insert', 'picture', 'logo', 'stamp'], accept: PDF, multiple: false, minFiles: 1, speed: 'fast', offline: true, customPage: 'editor', editorTool: 'image' },
+  {
+    slug: 'crop-pdf', name: 'Crop PDF', description: 'Trim margins or crop pages to a selected area.',
+    category: 'edit', icon: Crop, keywords: ['trim', 'margins', 'cut'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'crop',
+  },
+  {
+    slug: 'page-numbers', name: 'Add Page Numbers', description: 'Stamp page numbers with position and format control.',
+    category: 'edit', icon: Hash, keywords: ['numbering', 'pagination', 'folio'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'select', key: 'position', label: 'Position', default: 'bottom-center', choices: [
+        { value: 'bottom-center', label: 'Bottom center' }, { value: 'bottom-right', label: 'Bottom right' }, { value: 'bottom-left', label: 'Bottom left' },
+        { value: 'top-center', label: 'Top center' }, { value: 'top-right', label: 'Top right' }, { value: 'top-left', label: 'Top left' },
+      ] },
+      { kind: 'select', key: 'format', label: 'Format', default: 'n', choices: [
+        { value: 'n', label: '1, 2, 3…' }, { value: 'n-of-total', label: 'Page 1 of N' }, { value: 'dash', label: '- 1 -' },
+      ] },
+      { kind: 'number', key: 'start', label: 'Start at', default: 1, min: 1 },
+      { kind: 'number', key: 'size', label: 'Font size', default: 11, min: 6, max: 36 },
+    ],
+    run: () => import('@/features/organize').then((m) => m.pageNumbers),
+  },
+  {
+    slug: 'watermark-pdf', name: 'Watermark', description: 'Diagonal or straight text watermark on every page.',
+    category: 'edit', icon: Stamp, keywords: ['stamp', 'draft', 'confidential', 'brand'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'text', key: 'text', label: 'Watermark text', default: 'CONFIDENTIAL' },
+      { kind: 'number', key: 'size', label: 'Font size', default: 48, min: 8, max: 144 },
+      { kind: 'number', key: 'opacity', label: 'Opacity (%)', default: 15, min: 2, max: 100 },
+      { kind: 'checkbox', key: 'diagonal', label: 'Diagonal (45°)', default: true },
+      { kind: 'select', key: 'color', label: 'Color', default: 'gray', choices: [
+        { value: 'gray', label: 'Gray' }, { value: 'red', label: 'Red' }, { value: 'blue', label: 'Blue' }, { value: 'black', label: 'Black' },
+      ] },
+    ],
+    run: () => import('@/features/organize').then((m) => m.watermark),
+  },
+  {
+    slug: 'header-footer', name: 'Header / Footer', description: 'Add repeating header and footer text to every page.',
+    category: 'edit', icon: PanelTop, keywords: ['running head', 'title', 'date'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'text', key: 'header', label: 'Header text (empty = none)', default: '' },
+      { kind: 'text', key: 'footer', label: 'Footer text (empty = none)', default: '' },
+      { kind: 'select', key: 'align', label: 'Alignment', default: 'center', choices: [
+        { value: 'left', label: 'Left' }, { value: 'center', label: 'Center' }, { value: 'right', label: 'Right' },
+      ] },
+      { kind: 'number', key: 'size', label: 'Font size', default: 10, min: 6, max: 24 },
+    ],
+    note: 'Use {page} and {total} placeholders for page numbers, {date} for today’s date.',
+    run: () => import('@/features/organize').then((m) => m.headerFooter),
+  },
+
+  // ───────────────────────── Convert from PDF ─────────────────────────
+  {
+    slug: 'pdf-to-word', name: 'PDF → Word', description: 'Extract text into an editable .docx document.',
+    category: 'convert-from', icon: FileText, keywords: ['docx', 'doc', 'office', 'editable'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    note: 'Text and paragraph flow are preserved; complex layouts, columns and images are not reproduced.',
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToWord),
+  },
+  {
+    slug: 'pdf-to-excel', name: 'PDF → Excel', description: 'Detect table-like rows and export to .xlsx.',
+    category: 'convert-from', icon: FileSpreadsheet, keywords: ['xlsx', 'csv', 'table', 'spreadsheet'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [{ kind: 'select', key: 'format', label: 'Output format', default: 'xlsx', choices: [
+      { value: 'xlsx', label: 'Excel (.xlsx)' }, { value: 'csv', label: 'CSV (.csv)' },
+    ] }],
+    note: 'Column detection is heuristic — best for simple, grid-like tables.',
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToExcel),
+  },
+  {
+    slug: 'pdf-to-powerpoint', name: 'PDF → PowerPoint', description: 'Each page becomes a full-size slide image in a .pptx.',
+    category: 'convert-from', icon: Presentation, keywords: ['pptx', 'slides', 'deck'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'medium', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToPowerPoint),
+  },
+  {
+    slug: 'pdf-to-jpg', name: 'PDF → JPG', description: 'Render every page as a high-quality JPG image.',
+    category: 'convert-from', icon: FileImage, keywords: ['jpeg', 'image', 'picture'], accept: PDF, multiple: true, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [
+      { kind: 'select', key: 'dpi', label: 'Resolution', default: '150', choices: [
+        { value: '96', label: '96 DPI (screen)' }, { value: '150', label: '150 DPI (good)' }, { value: '300', label: '300 DPI (print)' },
+      ] },
+      { kind: 'number', key: 'quality', label: 'JPG quality (%)', default: 90, min: 10, max: 100 },
+    ],
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToJpg),
+  },
+  {
+    slug: 'pdf-to-png', name: 'PDF → PNG', description: 'Render every page as a lossless PNG image.',
+    category: 'convert-from', icon: FileImage, keywords: ['image', 'lossless', 'transparent'], accept: PDF, multiple: true, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [{ kind: 'select', key: 'dpi', label: 'Resolution', default: '150', choices: [
+      { value: '96', label: '96 DPI (screen)' }, { value: '150', label: '150 DPI (good)' }, { value: '300', label: '300 DPI (print)' },
+    ] }],
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToPng),
+  },
+  {
+    slug: 'pdf-to-svg', name: 'PDF → SVG', description: 'Wrap each rendered page in a scalable SVG container.',
+    category: 'convert-from', icon: FileCode, keywords: ['vector', 'scalable'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    note: 'Pages are rasterized and embedded — true vector extraction is not supported in-browser.',
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToSvg),
+  },
+  {
+    slug: 'pdf-to-tiff', name: 'PDF → TIFF', description: 'Export pages as an uncompressed multi-page TIFF.',
+    category: 'convert-from', icon: FileImage, keywords: ['tif', 'fax', 'archive'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'medium', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToTiff),
+  },
+  {
+    slug: 'pdf-to-html', name: 'PDF → HTML', description: 'Convert extracted text into a clean HTML document.',
+    category: 'convert-from', icon: FileCode, keywords: ['web', 'webpage'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToHtml),
+  },
+  {
+    slug: 'pdf-to-txt', name: 'PDF → TXT', description: 'Extract all text into a plain .txt file.',
+    category: 'convert-from', icon: FileType, keywords: ['plain text', 'extract text', 'copy'], accept: PDF, multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToTxt),
+  },
+  {
+    slug: 'pdf-to-markdown', name: 'PDF → Markdown', description: 'Extract text with heading detection into .md.',
+    category: 'convert-from', icon: FileDown, keywords: ['md', 'notes', 'obsidian'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToMarkdown),
+  },
+  {
+    slug: 'pdf-to-epub', name: 'PDF → EPUB', description: 'Build a reflowable EPUB e-book from the PDF text.',
+    category: 'convert-from', icon: BookOpen, keywords: ['ebook', 'kindle', 'reader'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToEpub),
+  },
+  {
+    slug: 'pdf-to-rtf', name: 'PDF → RTF', description: 'Export text as Rich Text Format for any word processor.',
+    category: 'convert-from', icon: FileType, keywords: ['rich text', 'wordpad'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'instant', offline: true,
+    run: () => import('@/features/convertFrom').then((m) => m.pdfToRtf),
+  },
+
+  // ───────────────────────── Convert to PDF ─────────────────────────
+  {
+    slug: 'jpg-to-pdf', name: 'JPG → PDF', description: 'Combine JPG photos into a single PDF.',
+    category: 'convert-to', icon: FileImage, keywords: ['jpeg', 'photo', 'scan'], accept: ['image/jpeg', '.jpg', '.jpeg'], multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'select', key: 'pageSize', label: 'Page size', default: 'fit', choices: [
+        { value: 'fit', label: 'Fit to image' }, { value: 'a4', label: 'A4' }, { value: 'letter', label: 'US Letter' },
+      ] },
+      { kind: 'checkbox', key: 'landscape', label: 'Landscape orientation', default: false },
+    ],
+    run: () => import('@/features/convertTo').then((m) => m.imagesToPdf),
+  },
+  {
+    slug: 'png-to-pdf', name: 'PNG → PDF', description: 'Combine PNG images (transparency preserved on white).',
+    category: 'convert-to', icon: FileImage, keywords: ['image', 'screenshot'], accept: ['image/png', '.png'], multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'select', key: 'pageSize', label: 'Page size', default: 'fit', choices: [
+        { value: 'fit', label: 'Fit to image' }, { value: 'a4', label: 'A4' }, { value: 'letter', label: 'US Letter' },
+      ] },
+      { kind: 'checkbox', key: 'landscape', label: 'Landscape orientation', default: false },
+    ],
+    run: () => import('@/features/convertTo').then((m) => m.imagesToPdf),
+  },
+  {
+    slug: 'image-to-pdf', name: 'Image → PDF', description: 'Any mix of PNG, JPG, WebP, GIF or BMP into one PDF.',
+    category: 'convert-to', icon: Images, keywords: ['picture', 'webp', 'gif', 'bmp', 'photos'], accept: IMAGES, multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    options: [
+      { kind: 'select', key: 'pageSize', label: 'Page size', default: 'fit', choices: [
+        { value: 'fit', label: 'Fit to image' }, { value: 'a4', label: 'A4' }, { value: 'letter', label: 'US Letter' },
+      ] },
+      { kind: 'checkbox', key: 'landscape', label: 'Landscape orientation', default: false },
+    ],
+    run: () => import('@/features/convertTo').then((m) => m.imagesToPdf),
+  },
+  {
+    slug: 'svg-to-pdf', name: 'SVG → PDF', description: 'Rasterize SVG vector files into PDF pages.',
+    category: 'convert-to', icon: FileCode, keywords: ['vector', 'drawing'], accept: ['image/svg+xml', '.svg'], multiple: true, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/convertTo').then((m) => m.svgToPdf),
+  },
+  {
+    slug: 'word-to-pdf', name: 'Word → PDF', description: 'Convert .docx documents to PDF (text and headings).',
+    category: 'convert-to', icon: FileText, keywords: ['docx', 'office', 'document'], accept: ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx'], multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    note: 'Paragraphs, headings, bold and lists convert well. Images, tables and exact layout are simplified.',
+    run: () => import('@/features/convertTo').then((m) => m.docxToPdf),
+  },
+  {
+    slug: 'excel-to-pdf', name: 'Excel → PDF', description: 'Convert .xlsx sheets into PDF tables.',
+    category: 'convert-to', icon: FileSpreadsheet, keywords: ['xlsx', 'spreadsheet', 'sheet'], accept: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.xlsx', 'text/csv', '.csv'], multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/convertTo').then((m) => m.xlsxToPdf),
+  },
+  {
+    slug: 'powerpoint-to-pdf', name: 'PowerPoint → PDF', description: 'Convert .pptx slide text into PDF pages.',
+    category: 'convert-to', icon: MonitorPlay, keywords: ['pptx', 'slides', 'presentation'], accept: ['application/vnd.openxmlformats-officedocument.presentationml.presentation', '.pptx'], multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    note: 'Slide text is preserved; images, themes and exact layout are simplified.',
+    run: () => import('@/features/convertTo').then((m) => m.pptxToPdf),
+  },
+  {
+    slug: 'html-to-pdf', name: 'HTML → PDF', description: 'Convert an HTML file’s readable content into a PDF.',
+    category: 'convert-to', icon: FileCode, keywords: ['webpage', 'web'], accept: ['text/html', '.html', '.htm'], multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    note: 'Text content is converted. For pixel-perfect results, use your browser’s built-in Print → Save as PDF.',
+    run: () => import('@/features/convertTo').then((m) => m.htmlToPdf),
+  },
+  {
+    slug: 'text-to-pdf', name: 'Text → PDF', description: 'Turn .txt or Markdown files into a clean PDF.',
+    category: 'convert-to', icon: FileType, keywords: ['txt', 'plain', 'markdown', 'md'], accept: ['text/plain', '.txt', '.md', 'text/markdown'], multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    run: () => import('@/features/convertTo').then((m) => m.textToPdf),
+  },
+
+  // ───────────────────────── OCR ─────────────────────────
+  {
+    slug: 'ocr-pdf', name: 'OCR PDF', description: 'Recognize text in scanned PDFs. 20+ languages.',
+    category: 'ocr', icon: ScanText, keywords: ['recognize', 'scan', 'text recognition'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'heavy', offline: false,
+    options: [
+      { kind: 'select', key: 'lang', label: 'Language', default: 'eng', choices: [
+        { value: 'eng', label: 'English' }, { value: 'spa', label: 'Spanish' }, { value: 'fra', label: 'French' },
+        { value: 'deu', label: 'German' }, { value: 'ita', label: 'Italian' }, { value: 'por', label: 'Portuguese' },
+        { value: 'nld', label: 'Dutch' }, { value: 'pol', label: 'Polish' }, { value: 'tur', label: 'Turkish' },
+        { value: 'rus', label: 'Russian' }, { value: 'ukr', label: 'Ukrainian' }, { value: 'ara', label: 'Arabic' },
+        { value: 'hin', label: 'Hindi' }, { value: 'ben', label: 'Bengali' }, { value: 'chi_sim', label: 'Chinese (Simplified)' },
+        { value: 'chi_tra', label: 'Chinese (Traditional)' }, { value: 'jpn', label: 'Japanese' }, { value: 'kor', label: 'Korean' },
+        { value: 'vie', label: 'Vietnamese' }, { value: 'ind', label: 'Indonesian' },
+      ] },
+    ],
+    note: 'The language pack (a few MB) is downloaded once and cached. Your document itself never leaves the browser.',
+    run: () => import('@/features/ocr').then((m) => m.ocrPdfToText),
+  },
+  {
+    slug: 'ocr-image', name: 'OCR Image', description: 'Extract text from photos and screenshots.',
+    category: 'ocr', icon: ScanSearch, keywords: ['photo text', 'screenshot', 'recognize'], accept: IMAGES, multiple: true, minFiles: 1,
+    speed: 'heavy', offline: false,
+    options: [
+      { kind: 'select', key: 'lang', label: 'Language', default: 'eng', choices: [
+        { value: 'eng', label: 'English' }, { value: 'spa', label: 'Spanish' }, { value: 'fra', label: 'French' },
+        { value: 'deu', label: 'German' }, { value: 'ita', label: 'Italian' }, { value: 'por', label: 'Portuguese' },
+        { value: 'rus', label: 'Russian' }, { value: 'ara', label: 'Arabic' }, { value: 'hin', label: 'Hindi' },
+        { value: 'chi_sim', label: 'Chinese (Simplified)' }, { value: 'jpn', label: 'Japanese' }, { value: 'kor', label: 'Korean' },
+      ] },
+    ],
+    run: () => import('@/features/ocr').then((m) => m.ocrImage),
+  },
+  {
+    slug: 'searchable-pdf', name: 'Searchable PDF', description: 'Add an invisible text layer to scanned PDFs so they become searchable.',
+    category: 'ocr', icon: FileSearch, keywords: ['invisible text', 'index', 'scan'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'heavy', offline: false,
+    options: [
+      { kind: 'select', key: 'lang', label: 'Language', default: 'eng', choices: [
+        { value: 'eng', label: 'English' }, { value: 'spa', label: 'Spanish' }, { value: 'fra', label: 'French' },
+        { value: 'deu', label: 'German' }, { value: 'ita', label: 'Italian' }, { value: 'por', label: 'Portuguese' },
+      ] },
+    ],
+    note: 'Latin-alphabet languages only — the invisible layer uses standard PDF fonts.',
+    run: () => import('@/features/ocr').then((m) => m.searchablePdf),
+  },
+
+  // ───────────────────────── Security ─────────────────────────
+  {
+    slug: 'protect-pdf', name: 'Protect PDF', description: 'Encrypt with a password (AES) and set permissions.',
+    category: 'security', icon: Lock, keywords: ['password', 'encrypt', 'secure'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [
+      { kind: 'password', key: 'password', label: 'Password', default: '', placeholder: 'Required to open the file' },
+      { kind: 'checkbox', key: 'allowPrinting', label: 'Allow printing', default: true },
+      { kind: 'checkbox', key: 'allowCopying', label: 'Allow copying text', default: false },
+    ],
+    run: () => import('@/features/security').then((m) => m.protectPdf),
+  },
+  {
+    slug: 'unlock-pdf', name: 'Unlock PDF', description: 'Remove a password you know from a PDF.',
+    category: 'security', icon: Unlock, keywords: ['decrypt', 'remove password', 'open'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [{ kind: 'password', key: 'password', label: 'Current password', default: '', placeholder: 'Leave empty if none' }],
+    note: 'Only works when you know the password. Papermint does not crack passwords.',
+    run: () => import('@/features/security').then((m) => m.unlockPdf),
+  },
+  {
+    slug: 'remove-password', name: 'Remove Password', description: 'Same as Unlock — decrypt a PDF with its password.',
+    category: 'security', icon: KeyRound, keywords: ['decrypt', 'unlock'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [{ kind: 'password', key: 'password', label: 'Current password', default: '' }],
+    run: () => import('@/features/security').then((m) => m.unlockPdf),
+  },
+  {
+    slug: 'redact-pdf', name: 'Redact', description: 'Permanently black out sensitive content — pages are re-rendered so hidden text is truly gone.',
+    category: 'security', icon: SquareDashedBottom, keywords: ['black out', 'censor', 'remove text', 'privacy'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'medium', offline: true, customPage: 'redact',
+  },
+  {
+    slug: 'remove-metadata', name: 'Metadata Removal', description: 'Strip author, title, creation dates and app fingerprints.',
+    category: 'security', icon: FileX, keywords: ['exif', 'author', 'anonymize', 'clean'], accept: PDF, multiple: true, minFiles: 1,
+    speed: 'instant', offline: true,
+    run: () => import('@/features/security').then((m) => m.removeMetadata),
+  },
+
+  // ───────────────────────── Compression ─────────────────────────
+  {
+    slug: 'compress-pdf', name: 'Compress PDF', description: 'Shrink file size with three quality levels.',
+    category: 'compress', icon: Minimize2, keywords: ['shrink', 'reduce size', 'smaller', 'optimize'], accept: PDF, multiple: true, minFiles: 1,
+    speed: 'medium', offline: true,
+    options: [
+      { kind: 'select', key: 'level', label: 'Compression level', default: 'medium', choices: [
+        { value: 'high', label: 'High quality (mild compression)' },
+        { value: 'medium', label: 'Medium (recommended)' },
+        { value: 'maximum', label: 'Maximum compression (smallest file)' },
+      ] },
+      { kind: 'checkbox', key: 'structureOnly', label: 'Lossless mode (rewrite structure only, keeps selectable text)', default: false },
+    ],
+    note: 'Standard mode re-encodes pages as optimized images — big savings, but text is no longer selectable. Lossless mode keeps text and saves less.',
+    run: () => import('@/features/compress').then((m) => m.compressPdf),
+  },
+  {
+    slug: 'compress-images', name: 'Compress Images', description: 'Reduce JPG, PNG and WebP file sizes.',
+    category: 'compress', icon: ImageDown, keywords: ['optimize', 'shrink photo'], accept: IMAGES, multiple: true, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [
+      { kind: 'select', key: 'level', label: 'Compression level', default: 'medium', choices: [
+        { value: 'high', label: 'High quality' }, { value: 'medium', label: 'Medium' }, { value: 'maximum', label: 'Maximum compression' },
+      ] },
+    ],
+    run: () => import('@/features/imageTools').then((m) => m.compressImages),
+  },
+
+  // ───────────────────────── Forms & signing ─────────────────────────
+  {
+    slug: 'fill-forms', name: 'Fill Forms', description: 'Fill interactive AcroForm fields and flatten if you like.',
+    category: 'forms', icon: TextCursorInput, keywords: ['acroform', 'form fields', 'input'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'fill-forms',
+  },
+  {
+    slug: 'create-forms', name: 'Create Fillable Forms', description: 'Place text fields and checkboxes onto any PDF.',
+    category: 'forms', icon: FolderInput, keywords: ['form builder', 'fields'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'create-forms',
+  },
+  {
+    slug: 'sign-pdf', name: 'Sign PDF', description: 'Draw, type or upload a signature and place it anywhere.',
+    category: 'forms', icon: PenTool, keywords: ['signature', 'esign', 'autograph', 'initials'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true, customPage: 'sign',
+  },
+
+  // ───────────────────────── Images ─────────────────────────
+  {
+    slug: 'extract-images', name: 'Extract Images', description: 'Pull embedded images out of a PDF as PNG files.',
+    category: 'images', icon: Images, keywords: ['save pictures', 'export images'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/imageTools').then((m) => m.extractImages),
+  },
+  {
+    slug: 'image-enhance', name: 'Image Enhancement', description: 'Brightness, contrast, sharpening and grayscale for scans.',
+    category: 'images', icon: Wand2, keywords: ['cleanup', 'scan cleanup', 'sharpen', 'contrast', 'brighten'], accept: IMAGES, multiple: true, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [
+      { kind: 'number', key: 'brightness', label: 'Brightness (%)', default: 100, min: 25, max: 200, step: 5 },
+      { kind: 'number', key: 'contrast', label: 'Contrast (%)', default: 110, min: 25, max: 200, step: 5 },
+      { kind: 'checkbox', key: 'grayscale', label: 'Convert to grayscale', default: false },
+      { kind: 'checkbox', key: 'sharpen', label: 'Sharpen', default: true },
+    ],
+    run: () => import('@/features/imageTools').then((m) => m.enhanceImages),
+  },
+
+  // ───────────────────────── Compare ─────────────────────────
+  {
+    slug: 'compare-pdf', name: 'Compare PDFs', description: 'Side-by-side view with visual difference highlighting.',
+    category: 'compare', icon: Diff, keywords: ['diff', 'differences', 'versions', 'changes'], accept: PDF, multiple: true, minFiles: 2,
+    speed: 'medium', offline: true, customPage: 'compare',
+  },
+
+  // ───────────────────────── Smart tools (local only) ─────────────────────────
+  {
+    slug: 'summarize-pdf', name: 'Summarize Text', description: 'Local extractive summary of the document — no cloud AI.',
+    category: 'ai', icon: AlignLeft, keywords: ['summary', 'tldr', 'abstract'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    options: [{ kind: 'number', key: 'sentences', label: 'Summary length (sentences)', default: 6, min: 2, max: 20 }],
+    run: () => import('@/features/ai').then((m) => m.summarize),
+  },
+  {
+    slug: 'keywords-pdf', name: 'Keyword Extraction', description: 'Top terms and phrases, ranked by local frequency analysis.',
+    category: 'ai', icon: Tags, keywords: ['topics', 'tags', 'terms'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/ai').then((m) => m.keywords),
+  },
+  {
+    slug: 'outline-pdf', name: 'Document Outline', description: 'Extract bookmarks or detect headings to build a table of contents.',
+    category: 'ai', icon: ListTree, keywords: ['toc', 'table of contents', 'bookmarks', 'structure'], accept: PDF, multiple: false, minFiles: 1,
+    speed: 'fast', offline: true,
+    run: () => import('@/features/ai').then((m) => m.outline),
+  },
+]
+
+export function toolBySlug(slug: string): ToolDef | undefined {
+  return TOOLS.find((t) => t.slug === slug)
+}
+
+export function toolsByCategory(cat: Category['id']): ToolDef[] {
+  return TOOLS.filter((t) => t.category === cat)
+}
+
+export function searchTools(query: string): ToolDef[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return TOOLS
+  return TOOLS.filter(
+    (t) =>
+      t.name.toLowerCase().includes(q) ||
+      t.description.toLowerCase().includes(q) ||
+      t.keywords.some((k) => k.includes(q)) ||
+      t.slug.includes(q),
+  )
+}

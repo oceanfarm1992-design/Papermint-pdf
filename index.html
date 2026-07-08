@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0c0d10" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
+    <title>Papermint — Free PDF Tools That Never Upload Your Files</title>
+    <meta
+      name="description"
+      content="Merge, split, compress, convert, edit, sign and OCR PDFs — 100% in your browser. No uploads, no accounts, no tracking. Your files never leave your device."
+    />
+    <link rel="canonical" href="https://papermint.pages.dev/" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Papermint" />
+    <meta property="og:title" content="Papermint — Free PDF Tools That Never Upload Your Files" />
+    <meta
+      property="og:description"
+      content="Merge, split, compress, convert, edit, sign and OCR PDFs — 100% in your browser. No uploads, no accounts, no tracking."
+    />
+    <meta property="og:url" content="https://papermint.pages.dev/" />
+    <meta property="og:image" content="https://papermint.pages.dev/og.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Papermint — Free PDF Tools That Never Upload Your Files" />
+    <meta
+      name="twitter:description"
+      content="Every PDF operation runs locally in your browser. No uploads. No tracking. No accounts."
+    />
+    <meta name="twitter:image" content="https://papermint.pages.dev/og.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Papermint",
+        "url": "https://papermint.pages.dev/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires a modern browser with WebAssembly",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Free, private PDF tools that run entirely in your browser. Merge, split, compress, convert, edit, sign and OCR PDFs without uploading files."
+      }
+    </script>
+
+    <!-- Apply theme before first paint to avoid flash -->
+    <script>
+      ;(function () {
+        try {
+          var t = localStorage.getItem('pm-theme')
+          var dark =
+            t === 'dark' ||
+            ((t === null || t === 'system') &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (dark) document.documentElement.classList.add('dark')
+        } catch (e) {
+          /* storage unavailable — default to light */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

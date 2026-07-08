@@ -1,0 +1,17 @@
+{
+  "name": "Papermint — Private PDF Tools",
+  "short_name": "Papermint",
+  "description": "Free PDF tools that run entirely in your browser. No uploads, no tracking.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0d10",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

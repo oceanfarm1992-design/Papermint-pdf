@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+
+  --color-surface: #ffffff;
+  --color-surface-2: #f7f8fa;
+  --color-ink: #101318;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+
+  --radius-card: 1rem;
+
+  --animate-pop: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-neutral-900 antialiased dark:bg-[#0c0d10] dark:text-neutral-100;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  @apply bg-brand-500/25;
+}
+
+/* Subtle scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(0 0 0 / 0.2) transparent;
+}
+.dark * {
+  scrollbar-color: rgb(255 255 255 / 0.15) transparent;
+}
+
+/* Focus visibility (WCAG) */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brand-500;
+}
+
+/* Reusable primitives */
+@utility card {
+  @apply rounded-2xl border border-neutral-200/80 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900/70;
+}
+
+@utility btn-primary {
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 font-medium text-white transition-colors select-none hover:bg-brand-700 active:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility btn-secondary {
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2 font-medium text-neutral-800 transition-colors select-none hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800;
+}
+
+@utility btn-ghost {
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm text-neutral-600 transition-colors select-none hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100;
+}
+
+@utility input-base {
+  @apply w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100;
+}
+
+@utility label-base {
+  @apply mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300;
+}
+
+/* Checkerboard behind transparent previews */
+@utility bg-checker {
+  background-image:
+    linear-gradient(45deg, rgb(0 0 0 / 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(0 0 0 / 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(0 0 0 / 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(0 0 0 / 0.06) 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+}
