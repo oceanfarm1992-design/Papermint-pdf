@@ -10,7 +10,7 @@
 # single-page-application fallback, so client-side routes (e.g. /tool/merge-pdf)
 # resolve to index.html instead of 404ing.
 
-name = "papermint"
+name = "papermint-pdf"
 compatibility_date = "2026-07-01"
 
 [assets]
