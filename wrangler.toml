@@ -13,6 +13,15 @@
 name = "papermint-pdf"
 compatibility_date = "2026-07-01"
 
+# Custom domain (privacypdftools.com). With custom_domain = true, `wrangler deploy`
+# creates/maintains the Cloudflare DNS + TLS binding automatically — the domain's
+# zone must already be active on this Cloudflare account. If a placeholder A/CNAME
+# record for these hostnames exists in the DNS zone, delete it first or the bind fails.
+routes = [
+  { pattern = "privacypdftools.com", custom_domain = true },
+  { pattern = "www.privacypdftools.com", custom_domain = true },
+]
+
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
