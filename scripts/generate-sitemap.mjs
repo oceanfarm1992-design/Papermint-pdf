@@ -7,7 +7,11 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const SITE = 'https://papermint.pages.dev'
+
+// Single source of truth for the canonical origin is SITE_URL in src/data/meta.ts.
+// Read it without executing TS so this script stays dependency-free.
+const meta = readFileSync(join(root, 'src', 'data', 'meta.ts'), 'utf8')
+const SITE = /SITE_URL\s*=\s*'([^']+)'/.exec(meta)?.[1] ?? 'https://privacypdftools.com'
 
 // Extract slugs from the registry without executing TS: match `slug: '...'`
 const source = readFileSync(join(root, 'src', 'data', 'tools.ts'), 'utf8')
