@@ -1,6 +1,12 @@
 import { StandardFonts, rgb } from '@cantoo/pdf-lib'
 import type { OutputFile, ProcessFn } from '@/types/tool'
-import { openWithPdfJs, openWithPdfLib, renderPageToCanvas, savePdfBlob, throwIfAborted } from '@/utils/pdf'
+import {
+  openWithPdfJs,
+  openWithPdfLib,
+  renderPageToCanvas,
+  savePdfBlob,
+  throwIfAborted,
+} from '@/utils/pdf'
 import { winAnsiSafe } from '@/utils/textLayout'
 import { baseName } from '@/utils/format'
 import { UserError } from '@/utils/errors'

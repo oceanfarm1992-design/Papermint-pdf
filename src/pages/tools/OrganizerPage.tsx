@@ -33,7 +33,8 @@ export default function OrganizerPage({ tool }: { tool: ToolDef }) {
     try {
       const doc = await openWithPdfJs(f)
       const initial: PageItem[] = []
-      for (let i = 0; i < doc.numPages; i++) initial.push({ srcIndex: i, rotation: 0, id: idRef.current++ })
+      for (let i = 0; i < doc.numPages; i++)
+        initial.push({ srcIndex: i, rotation: 0, id: idRef.current++ })
       setItems(initial)
       const list: string[] = []
       for (let i = 1; i <= doc.numPages; i++) {
@@ -84,7 +85,10 @@ export default function OrganizerPage({ tool }: { tool: ToolDef }) {
     try {
       const src = await openWithPdfLib(file)
       const out = await PDFDocument.create()
-      const copied = await out.copyPages(src, items.map((it) => it.srcIndex))
+      const copied = await out.copyPages(
+        src,
+        items.map((it) => it.srcIndex),
+      )
       copied.forEach((page, i) => {
         const item = items[i]
         if (!item) return
@@ -105,19 +109,24 @@ export default function OrganizerPage({ tool }: { tool: ToolDef }) {
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])} wide>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <p className="mr-auto text-sm text-neutral-500 dark:text-neutral-400">
-          {items.length} page{items.length === 1 ? '' : 's'} — drag to reorder, use the buttons to rotate,
-          duplicate or delete.
+          {items.length} page{items.length === 1 ? '' : 's'} — drag to reorder, use the buttons to
+          rotate, duplicate or delete.
         </p>
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => mutate((prev) => prev.map((p) => ({ ...p, rotation: (p.rotation + 90) % 360 })))}
+          onClick={() =>
+            mutate((prev) => prev.map((p) => ({ ...p, rotation: (p.rotation + 90) % 360 })))
+          }
           disabled={items.length === 0}
         >
           <RotateCw className="h-4 w-4" aria-hidden /> Rotate all
@@ -133,13 +142,25 @@ export default function OrganizerPage({ tool }: { tool: ToolDef }) {
         <button type="button" className="btn-secondary" onClick={undo} disabled={history.length === 0}>
           <Undo2 className="h-4 w-4" aria-hidden /> Undo
         </button>
-        <button type="button" className="btn-primary" onClick={() => void exportPdf()} disabled={busy || items.length === 0}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={() => void exportPdf()}
+          disabled={busy || items.length === 0}
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden />
+          )}
           Download PDF
         </button>
       </div>
 
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6" aria-label="Pages">
+      <ul
+        className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+        aria-label="Pages"
+      >
         {items.map((item, i) => (
           <li
             key={item.id}
@@ -185,7 +206,9 @@ export default function OrganizerPage({ tool }: { tool: ToolDef }) {
                 className="btn-ghost px-2"
                 aria-label={`Rotate page ${i + 1}`}
                 onClick={() =>
-                  mutate((prev) => prev.map((p, j) => (j === i ? { ...p, rotation: (p.rotation + 90) % 360 } : p)))
+                  mutate((prev) =>
+                    prev.map((p, j) => (j === i ? { ...p, rotation: (p.rotation + 90) % 360 } : p)),
+                  )
                 }
               >
                 <RotateCw className="h-4 w-4" aria-hidden />

@@ -7,7 +7,12 @@ interface Props {
 }
 
 type Tab = 'draw' | 'type' | 'upload'
-const FONTS = ['"Segoe Script", cursive', '"Brush Script MT", cursive', '"Lucida Handwriting", cursive', 'Georgia, serif']
+const FONTS = [
+  '"Segoe Script", cursive',
+  '"Brush Script MT", cursive',
+  '"Lucida Handwriting", cursive',
+  'Georgia, serif',
+]
 
 export default function SignatureModal({ onDone, onClose }: Props) {
   const [tab, setTab] = useState<Tab>('draw')
@@ -74,7 +79,9 @@ export default function SignatureModal({ onDone, onClose }: Props) {
     const out = document.createElement('canvas')
     out.width = maxX - minX
     out.height = maxY - minY
-    out.getContext('2d')!.drawImage(source, minX, minY, out.width, out.height, 0, 0, out.width, out.height)
+    out
+      .getContext('2d')!
+      .drawImage(source, minX, minY, out.width, out.height, 0, 0, out.width, out.height)
     onDone(out.toDataURL('image/png'), out.width / out.height)
   }
 
@@ -106,7 +113,12 @@ export default function SignatureModal({ onDone, onClose }: Props) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Create signature" className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Create signature"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+    >
       <div className="card w-full max-w-2xl bg-white p-5 dark:bg-neutral-900">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Create your signature</h2>
@@ -115,7 +127,11 @@ export default function SignatureModal({ onDone, onClose }: Props) {
           </button>
         </div>
 
-        <div role="tablist" aria-label="Signature method" className="mb-4 flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
+        <div
+          role="tablist"
+          aria-label="Signature method"
+          className="mb-4 flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800"
+        >
           {(['draw', 'type', 'upload'] as Tab[]).map((t) => (
             <button
               key={t}
@@ -123,7 +139,9 @@ export default function SignatureModal({ onDone, onClose }: Props) {
               aria-selected={tab === t}
               onClick={() => setTab(t)}
               className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
-                tab === t ? 'bg-white shadow-sm dark:bg-neutral-700' : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
+                tab === t
+                  ? 'bg-white shadow-sm dark:bg-neutral-700'
+                  : 'text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
               }`}
             >
               {t}
@@ -207,7 +225,9 @@ export default function SignatureModal({ onDone, onClose }: Props) {
                   type="button"
                   onClick={() => setFontIdx(i)}
                   className={`rounded-xl border px-3 py-2 text-xl ${
-                    fontIdx === i ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-neutral-200 dark:border-neutral-700'
+                    fontIdx === i
+                      ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10'
+                      : 'border-neutral-200 dark:border-neutral-700'
                   }`}
                   style={{ fontFamily: f }}
                 >
@@ -216,7 +236,12 @@ export default function SignatureModal({ onDone, onClose }: Props) {
               ))}
             </div>
             <div className="flex justify-end">
-              <button type="button" className="btn-primary" disabled={!typed.trim()} onClick={finishTyped}>
+              <button
+                type="button"
+                className="btn-primary"
+                disabled={!typed.trim()}
+                onClick={finishTyped}
+              >
                 Use signature
               </button>
             </div>

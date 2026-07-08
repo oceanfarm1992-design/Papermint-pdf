@@ -96,7 +96,8 @@ export const deletePages: ProcessFn = async (files, options, ctx) => {
   const src = await openWithPdfLib(file)
   const total = src.getPageCount()
   const toDelete = new Set(parsePageRanges(String(options.pages ?? ''), total, false))
-  if (toDelete.size >= total) throw new UserError('You cannot delete every page — the PDF would be empty.')
+  if (toDelete.size >= total)
+    throw new UserError('You cannot delete every page — the PDF would be empty.')
   const keep = Array.from({ length: total }, (_, i) => i).filter((i) => !toDelete.has(i))
   ctx.onProgress(0.5, 'Rebuilding document')
   return [{ name: `${baseName(file.name)} (pages removed).pdf`, blob: await subsetPdf(src, keep) }]
@@ -167,7 +168,11 @@ export const pageNumbers: ProcessFn = async (files, options, ctx) => {
     ctx.onProgress(i / total, `Numbering page ${i + 1}`)
     const n = start + i
     const label =
-      format === 'n-of-total' ? `Page ${n} of ${total + start - 1}` : format === 'dash' ? `- ${n} -` : String(n)
+      format === 'n-of-total'
+        ? `Page ${n} of ${total + start - 1}`
+        : format === 'dash'
+          ? `- ${n} -`
+          : String(n)
     stampText(doc.getPage(i), font, label, size, position)
   }
   return [{ name: `${baseName(file.name)} (numbered).pdf`, blob: await savePdfBlob(doc) }]
@@ -218,17 +223,32 @@ export const headerFooter: ProcessFn = async (files, options, ctx) => {
   const today = new Date().toLocaleDateString()
 
   const fill = (tpl: string, page: number) =>
-    tpl.replaceAll('{page}', String(page)).replaceAll('{total}', String(total)).replaceAll('{date}', today)
+    tpl
+      .replaceAll('{page}', String(page))
+      .replaceAll('{total}', String(total))
+      .replaceAll('{date}', today)
 
   for (let i = 0; i < total; i++) {
     throwIfAborted(ctx.signal)
     ctx.onProgress(i / total, `Processing page ${i + 1}`)
     const page = doc.getPage(i)
     if (headerTpl) {
-      stampText(page, font, winAnsiStamp(font, fill(headerTpl, i + 1)), size, `top-${align}` as StampPosition)
+      stampText(
+        page,
+        font,
+        winAnsiStamp(font, fill(headerTpl, i + 1)),
+        size,
+        `top-${align}` as StampPosition,
+      )
     }
     if (footerTpl) {
-      stampText(page, font, winAnsiStamp(font, fill(footerTpl, i + 1)), size, `bottom-${align}` as StampPosition)
+      stampText(
+        page,
+        font,
+        winAnsiStamp(font, fill(footerTpl, i + 1)),
+        size,
+        `bottom-${align}` as StampPosition,
+      )
     }
   }
   return [{ name: `${baseName(file.name)} (header-footer).pdf`, blob: await savePdfBlob(doc) }]

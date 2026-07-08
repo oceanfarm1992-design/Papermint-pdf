@@ -8,7 +8,10 @@ import { friendlyError } from '@/utils/errors'
 
 const RENDER_W = 900
 
-async function renderPageUrl(file: File, pageNo: number): Promise<{ url: string; count: number } | null> {
+async function renderPageUrl(
+  file: File,
+  pageNo: number,
+): Promise<{ url: string; count: number } | null> {
   const doc = await openWithPdfJs(file)
   try {
     if (pageNo > doc.numPages) return { url: '', count: doc.numPages }
@@ -61,7 +64,15 @@ function diffImages(urlA: string, urlB: string): Promise<{ url: string; changed:
           const dbl = Math.abs((da.data[i + 2] ?? 0) - (db.data[i + 2] ?? 0))
           const delta = dr + dg + dbl
           // grayscale base from A
-          const gray = 255 - Math.round((255 - ((da.data[i] ?? 0) * 0.3 + (da.data[i + 1] ?? 0) * 0.59 + (da.data[i + 2] ?? 0) * 0.11)) * 0.25)
+          const gray =
+            255 -
+            Math.round(
+              (255 -
+                ((da.data[i] ?? 0) * 0.3 +
+                  (da.data[i + 1] ?? 0) * 0.59 +
+                  (da.data[i + 2] ?? 0) * 0.11)) *
+                0.25,
+            )
           if (delta > 40) {
             changed++
             result.data[i] = 225
@@ -122,17 +133,30 @@ export default function ComparePage({ tool }: { tool: ToolDef }) {
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
             <h2 className="label-base">Original PDF {fileA && `✓ ${fileA.name}`}</h2>
-            <FileDropzone accept={tool.accept} multiple={false} onFiles={(fs) => fs[0] && setFileA(fs[0])} compact={Boolean(fileA)} />
+            <FileDropzone
+              accept={tool.accept}
+              multiple={false}
+              onFiles={(fs) => fs[0] && setFileA(fs[0])}
+              compact={Boolean(fileA)}
+            />
           </div>
           <div>
             <h2 className="label-base">Modified PDF {fileB && `✓ ${fileB.name}`}</h2>
-            <FileDropzone accept={tool.accept} multiple={false} onFiles={(fs) => fs[0] && setFileB(fs[0])} compact={Boolean(fileB)} />
+            <FileDropzone
+              accept={tool.accept}
+              multiple={false}
+              onFiles={(fs) => fs[0] && setFileB(fs[0])}
+              compact={Boolean(fileB)}
+            />
           </div>
         </div>
       ) : (
         <div>
           {error && (
-            <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+            <p
+              role="alert"
+              className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+            >
               {error}
             </p>
           )}
@@ -144,7 +168,13 @@ export default function ComparePage({ tool }: { tool: ToolDef }) {
                 </span>
               ) : diff ? (
                 <>
-                  <strong className={diff.changed > 0.0005 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}>
+                  <strong
+                    className={
+                      diff.changed > 0.0005
+                        ? 'text-rose-600 dark:text-rose-400'
+                        : 'text-emerald-600 dark:text-emerald-400'
+                    }
+                  >
                     {(diff.changed * 100).toFixed(2)}%
                   </strong>{' '}
                   of this page differs (highlighted in red).
@@ -154,11 +184,25 @@ export default function ComparePage({ tool }: { tool: ToolDef }) {
               )}
             </p>
             <div className="flex items-center gap-1">
-              <button type="button" className="btn-ghost" aria-label="Previous page" disabled={pageNo <= 1 || busy} onClick={() => setPageNo((p) => p - 1)}>
+              <button
+                type="button"
+                className="btn-ghost"
+                aria-label="Previous page"
+                disabled={pageNo <= 1 || busy}
+                onClick={() => setPageNo((p) => p - 1)}
+              >
                 <ChevronLeft className="h-4 w-4" aria-hidden />
               </button>
-              <span className="text-sm tabular-nums">{pageNo} / {maxPages}</span>
-              <button type="button" className="btn-ghost" aria-label="Next page" disabled={pageNo >= maxPages || busy} onClick={() => setPageNo((p) => p + 1)}>
+              <span className="text-sm tabular-nums">
+                {pageNo} / {maxPages}
+              </span>
+              <button
+                type="button"
+                className="btn-ghost"
+                aria-label="Next page"
+                disabled={pageNo >= maxPages || busy}
+                onClick={() => setPageNo((p) => p + 1)}
+              >
                 <ChevronRight className="h-4 w-4" aria-hidden />
               </button>
             </div>
@@ -183,7 +227,10 @@ export default function ComparePage({ tool }: { tool: ToolDef }) {
               { title: 'Differences', src: diff?.url ?? '' },
             ].map(({ title, src }, i) => (
               <figure key={i} className="min-w-0">
-                <figcaption className="mb-1.5 truncate text-center text-xs font-medium text-neutral-500 dark:text-neutral-400" title={title}>
+                <figcaption
+                  className="mb-1.5 truncate text-center text-xs font-medium text-neutral-500 dark:text-neutral-400"
+                  title={title}
+                >
                   {title}
                 </figcaption>
                 {src ? (

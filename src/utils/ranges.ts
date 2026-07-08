@@ -27,7 +27,10 @@ export function parsePageRanges(expr: string, total: number, fallbackAll = true)
       for (let i = lo; i <= Math.min(hi, total); i++) out.push(i - 1)
     } else if (/^\d+$/.test(p)) {
       const n = Number(p)
-      if (n < 1 || n > total) throw new UserError(`Page ${n} does not exist — the document has ${total} page${total === 1 ? '' : 's'}.`)
+      if (n < 1 || n > total)
+        throw new UserError(
+          `Page ${n} does not exist — the document has ${total} page${total === 1 ? '' : 's'}.`,
+        )
       out.push(n - 1)
     } else {
       throw new UserError(`Could not understand “${p}”. Use numbers and ranges like “1-3, 5”.`)

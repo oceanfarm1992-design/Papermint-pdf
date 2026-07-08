@@ -1,5 +1,11 @@
 import type { OutputFile, ProcessFn } from '@/types/tool'
-import { canvasToBlob, canvasToBytes, openWithPdfJs, renderPageToCanvas, throwIfAborted } from '@/utils/pdf'
+import {
+  canvasToBlob,
+  canvasToBytes,
+  openWithPdfJs,
+  renderPageToCanvas,
+  throwIfAborted,
+} from '@/utils/pdf'
 import { extractLines, headingLevel, pagesToPlainText, escapeHtml, type TextLine } from '@/utils/pdfText'
 import { baseName } from '@/utils/format'
 import { UserError } from '@/utils/errors'
@@ -117,7 +123,10 @@ export const pdfToTxt: ProcessFn = async (files, _options, ctx) => {
         `No selectable text found in “${file.name}”. It is probably a scan — use OCR PDF instead.`,
       )
     }
-    outputs.push({ name: `${baseName(file.name)}.txt`, blob: new Blob([text], { type: 'text/plain;charset=utf-8' }) })
+    outputs.push({
+      name: `${baseName(file.name)}.txt`,
+      blob: new Blob([text], { type: 'text/plain;charset=utf-8' }),
+    })
   }
   return outputs
 }
@@ -126,7 +135,11 @@ export const pdfToMarkdown: ProcessFn = async (files, _options, ctx) => {
   const file = files[0]
   if (!file) throw new UserError('No file selected.')
   ctx.onProgress(0.1, 'Extracting text')
-  const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.8), ctx.signal)
+  const { pages, medianSize } = await extractLines(
+    file,
+    (f) => ctx.onProgress(0.1 + f * 0.8),
+    ctx.signal,
+  )
   const md: string[] = []
   for (const lines of pages) {
     for (const line of lines) {
@@ -138,15 +151,25 @@ export const pdfToMarkdown: ProcessFn = async (files, _options, ctx) => {
     md.push('')
   }
   const text = md.join('\n')
-  if (!text.trim()) throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
-  return [{ name: `${baseName(file.name)}.md`, blob: new Blob([text], { type: 'text/markdown;charset=utf-8' }) }]
+  if (!text.trim())
+    throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
+  return [
+    {
+      name: `${baseName(file.name)}.md`,
+      blob: new Blob([text], { type: 'text/markdown;charset=utf-8' }),
+    },
+  ]
 }
 
 export const pdfToHtml: ProcessFn = async (files, _options, ctx) => {
   const file = files[0]
   if (!file) throw new UserError('No file selected.')
   ctx.onProgress(0.1, 'Extracting text')
-  const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.8), ctx.signal)
+  const { pages, medianSize } = await extractLines(
+    file,
+    (f) => ctx.onProgress(0.1 + f * 0.8),
+    ctx.signal,
+  )
   const body: string[] = []
   pages.forEach((lines, p) => {
     body.push(`<section data-page="${p + 1}">`)
@@ -176,7 +199,9 @@ export const pdfToHtml: ProcessFn = async (files, _options, ctx) => {
 ${body.join('\n')}
 </body>
 </html>`
-  return [{ name: `${baseName(file.name)}.html`, blob: new Blob([html], { type: 'text/html;charset=utf-8' }) }]
+  return [
+    { name: `${baseName(file.name)}.html`, blob: new Blob([html], { type: 'text/html;charset=utf-8' }) },
+  ]
 }
 
 export const pdfToWord: ProcessFn = async (files, _options, ctx) => {
@@ -184,7 +209,11 @@ export const pdfToWord: ProcessFn = async (files, _options, ctx) => {
   if (!file) throw new UserError('No file selected.')
   const { buildDocx } = await import('./officeBuilders')
   ctx.onProgress(0.1, 'Extracting text')
-  const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.7), ctx.signal)
+  const { pages, medianSize } = await extractLines(
+    file,
+    (f) => ctx.onProgress(0.1 + f * 0.7),
+    ctx.signal,
+  )
 
   const blocks: DocxBlock[] = []
   let hasText = false
@@ -219,7 +248,12 @@ export const pdfToWord: ProcessFn = async (files, _options, ctx) => {
       if (isColumnLine(line)) {
         const run: TextLine[] = []
         let j = i
-        while (j < lines.length && lines[j] && isColumnLine(lines[j]!) && headingLevel(lines[j]!, medianSize) === 0) {
+        while (
+          j < lines.length &&
+          lines[j] &&
+          isColumnLine(lines[j]!) &&
+          headingLevel(lines[j]!, medianSize) === 0
+        ) {
           run.push(lines[j]!)
           j++
         }
@@ -251,7 +285,8 @@ export const pdfToWord: ProcessFn = async (files, _options, ctx) => {
     }
   }
 
-  if (!hasText) throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
+  if (!hasText)
+    throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
   ctx.onProgress(0.9, 'Building document')
   return [{ name: `${baseName(file.name)}.docx`, blob: await buildDocx(blocks, baseName(file.name)) }]
 }
@@ -272,14 +307,22 @@ export const pdfToExcel: ProcessFn = async (files, options, ctx) => {
   ctx.onProgress(0.1, 'Extracting text')
   const { pages } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.7), ctx.signal)
   const rows = linesToRows(pages)
-  if (rows.length === 0) throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
+  if (rows.length === 0)
+    throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
 
   if (String(options.format) === 'csv') {
     const csv = rows
-      .map((cells) => cells.map((c) => (/[",\n]/.test(c) ? `"${c.replaceAll('"', '""')}"` : c)).join(','))
+      .map((cells) =>
+        cells.map((c) => (/[",\n]/.test(c) ? `"${c.replaceAll('"', '""')}"` : c)).join(','),
+      )
       .join('\r\n')
     // BOM so Excel opens UTF-8 correctly
-    return [{ name: `${baseName(file.name)}.csv`, blob: new Blob(['﻿', csv], { type: 'text/csv;charset=utf-8' }) }]
+    return [
+      {
+        name: `${baseName(file.name)}.csv`,
+        blob: new Blob(['﻿', csv], { type: 'text/csv;charset=utf-8' }),
+      },
+    ]
   }
 
   const { buildXlsx } = await import('./officeBuilders')
@@ -292,7 +335,11 @@ export const pdfToEpub: ProcessFn = async (files, _options, ctx) => {
   if (!file) throw new UserError('No file selected.')
   const { buildEpub } = await import('./officeBuilders')
   ctx.onProgress(0.1, 'Extracting text')
-  const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.7), ctx.signal)
+  const { pages, medianSize } = await extractLines(
+    file,
+    (f) => ctx.onProgress(0.1 + f * 0.7),
+    ctx.signal,
+  )
 
   // Chapters: split on level-1 headings; fall back to one chapter per page block
   const chapters: { title: string; paragraphs: string[] }[] = []
@@ -311,7 +358,8 @@ export const pdfToEpub: ProcessFn = async (files, _options, ctx) => {
       }
     }
   }
-  if (chapters.length === 0) throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
+  if (chapters.length === 0)
+    throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
   ctx.onProgress(0.9, 'Packaging EPUB')
   return [{ name: `${baseName(file.name)}.epub`, blob: await buildEpub(chapters, baseName(file.name)) }]
 }
@@ -320,7 +368,11 @@ export const pdfToRtf: ProcessFn = async (files, _options, ctx) => {
   const file = files[0]
   if (!file) throw new UserError('No file selected.')
   ctx.onProgress(0.1, 'Extracting text')
-  const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.1 + f * 0.8), ctx.signal)
+  const { pages, medianSize } = await extractLines(
+    file,
+    (f) => ctx.onProgress(0.1 + f * 0.8),
+    ctx.signal,
+  )
 
   const rtfEscape = (s: string) => {
     let out = ''
@@ -346,6 +398,12 @@ export const pdfToRtf: ProcessFn = async (files, _options, ctx) => {
     parts.push('\\par')
   }
   parts.push('}')
-  if (!hasText) throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
-  return [{ name: `${baseName(file.name)}.rtf`, blob: new Blob([parts.join('\n')], { type: 'application/rtf' }) }]
+  if (!hasText)
+    throw new UserError('No selectable text found — this looks like a scanned PDF. Use OCR PDF instead.')
+  return [
+    {
+      name: `${baseName(file.name)}.rtf`,
+      blob: new Blob([parts.join('\n')], { type: 'application/rtf' }),
+    },
+  ]
 }

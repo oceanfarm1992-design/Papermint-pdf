@@ -15,7 +15,13 @@ interface Props {
   verb?: string
 }
 
-export default function PageSelectGrid({ file, value, onChange, emptyMeansAll, verb = 'select' }: Props) {
+export default function PageSelectGrid({
+  file,
+  value,
+  onChange,
+  emptyMeansAll,
+  verb = 'select',
+}: Props) {
   const [thumbs, setThumbs] = useState<string[]>([])
   const [count, setCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
@@ -90,14 +96,27 @@ export default function PageSelectGrid({ file, value, onChange, emptyMeansAll, v
           {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-neutral-400" aria-hidden />}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400" aria-live="polite">
+          <span
+            className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400"
+            aria-live="polite"
+          >
             {effectiveCount} of {count || '…'} selected
             {selected.size === 0 && emptyMeansAll && count > 0 ? ' (all)' : ''}
           </span>
-          <button type="button" className="btn-ghost text-xs" onClick={selectAll} disabled={allSelected || count === 0}>
+          <button
+            type="button"
+            className="btn-ghost text-xs"
+            onClick={selectAll}
+            disabled={allSelected || count === 0}
+          >
             Select all
           </button>
-          <button type="button" className="btn-ghost text-xs" onClick={clear} disabled={selected.size === 0}>
+          <button
+            type="button"
+            className="btn-ghost text-xs"
+            onClick={clear}
+            disabled={selected.size === 0}
+          >
             Clear
           </button>
         </div>
@@ -128,7 +147,9 @@ export default function PageSelectGrid({ file, value, onChange, emptyMeansAll, v
               )}
               <span
                 className={`pointer-events-none absolute top-1 left-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold transition-opacity ${
-                  isOn ? 'bg-brand-500 text-white' : 'bg-black/40 text-white opacity-0 group-hover:opacity-100'
+                  isOn
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-black/40 text-white opacity-0 group-hover:opacity-100'
                 }`}
               >
                 {isOn ? <Check className="h-3 w-3" aria-hidden /> : ''}

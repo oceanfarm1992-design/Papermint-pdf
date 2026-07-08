@@ -59,7 +59,9 @@ export default function FillFormsPage({ tool }: { tool: ToolDef }) {
         }
       }
       if (list.length === 0) {
-        setError('This PDF has no fillable form fields. Use “Create Fillable Forms” to add some, or “Add Text” to type anywhere.')
+        setError(
+          'This PDF has no fillable form fields. Use “Create Fillable Forms” to add some, or “Add Text” to type anywhere.',
+        )
         return
       }
       setFile(f)
@@ -104,7 +106,10 @@ export default function FillFormsPage({ tool }: { tool: ToolDef }) {
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])}>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
@@ -118,7 +123,11 @@ export default function FillFormsPage({ tool }: { tool: ToolDef }) {
               const id = `field-${f.name}`
               if (f.kind === 'checkbox') {
                 return (
-                  <label key={f.name} htmlFor={id} className="flex cursor-pointer items-center gap-2.5 text-sm">
+                  <label
+                    key={f.name}
+                    htmlFor={id}
+                    className="flex cursor-pointer items-center gap-2.5 text-sm"
+                  >
                     <input
                       id={id}
                       type="checkbox"
@@ -181,8 +190,17 @@ export default function FillFormsPage({ tool }: { tool: ToolDef }) {
             Flatten the form (make fields permanent and non-editable)
           </label>
           <div className="flex justify-center">
-            <button type="button" className="btn-primary px-8" disabled={busy} onClick={() => void apply()}>
-              {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+            <button
+              type="button"
+              className="btn-primary px-8"
+              disabled={busy}
+              onClick={() => void apply()}
+            >
+              {busy ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <Download className="h-4 w-4" aria-hidden />
+              )}
               Fill & download
             </button>
           </div>

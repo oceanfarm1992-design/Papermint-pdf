@@ -1,0 +1,146 @@
+# Core quality gates — runs on every PR and on main.
+# Gates: lockfile integrity, dependency tree sanity, TypeScript, oxlint,
+# Prettier, unit tests (+coverage), production build, bundle-size budget,
+# markdown lint. All jobs here should be marked "required" in branch protection.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Lint, typecheck & unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (validates lockfile sync)
+        run: npm ci
+
+      - name: Lockfile integrity — no drift after install
+        run: git diff --exit-code package-lock.json package.json
+
+      - name: Lockfile supply-chain lint (https-only, npm registry only)
+        run: npx lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm
+
+      - name: Dependency tree sanity (peer conflicts, invalid/extraneous)
+        run: npm ls --all > /dev/null
+
+      - name: TypeScript
+        run: npx tsc -b
+
+      - name: Lint (oxlint)
+        run: npm run lint
+
+      - name: Format check (prettier)
+        run: npx prettier --check "src/**/*.{ts,tsx,css}"
+
+      - name: Unit tests with coverage
+        run: npx vitest run --coverage
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+
+  bundle:
+    name: Bundle analysis & budget
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout PR / current
+        uses: actions/checkout@v4
+        with:
+          path: current
+
+      - name: Checkout base (for comparison)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: current/package-lock.json
+
+      - name: Build current (with module treemap)
+        working-directory: current
+        run: |
+          npm ci
+          npx vite build --mode analyze
+
+      - name: Build base
+        if: github.event_name == 'pull_request'
+        working-directory: base
+        run: |
+          npm ci
+          npx vite build
+          # Use the PR's report script so both sides measure identically
+          node ../current/scripts/bundle-report.mjs --dist dist --out ../baseline.json
+
+      - name: Analyze bundle and enforce budget
+        working-directory: current
+        env:
+          BUNDLE_MAX_INCREASE_KB: '25'
+          BUNDLE_MAX_INITIAL_KB: '300'
+          BUNDLE_FAIL_ON_THRESHOLD: '1'
+        run: |
+          if [ -f ../baseline.json ]; then
+            node scripts/bundle-report.mjs --dist dist --out ../bundle-report.json --baseline ../baseline.json --md ../bundle-report.md
+          else
+            node scripts/bundle-report.mjs --dist dist --out ../bundle-report.json --md ../bundle-report.md
+          fi
+          cat ../bundle-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment bundle report on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: bundle-analysis
+          path: bundle-report.md
+
+      - name: Upload bundle reports (treemap + JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis
+          path: |
+            current/dist/stats.html
+            bundle-report.json
+            bundle-report.md
+            baseline.json
+          retention-days: 30
+
+  docs-lint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v17
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+            !dist

@@ -27,6 +27,10 @@ export async function zipOutputs(outputs: OutputFile[], zipName: string): Promis
     used.add(name)
     zip.file(name, out.blob)
   }
-  const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })
+  const blob = await zip.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+  })
   downloadBlob(blob, zipName)
 }

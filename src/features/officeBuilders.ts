@@ -34,9 +34,15 @@ function paragraphXml(p: DocxParagraph): string {
     // Tab-separated columns: define evenly spaced tab stops across the page
     const cols = p.columns.length
     const step = Math.floor(CONTENT_WIDTH_DXA / cols)
-    const tabs = Array.from({ length: cols - 1 }, (_, i) => `<w:tab w:val="left" w:pos="${step * (i + 1)}"/>`).join('')
+    const tabs = Array.from(
+      { length: cols - 1 },
+      (_, i) => `<w:tab w:val="left" w:pos="${step * (i + 1)}"/>`,
+    ).join('')
     const runs = p.columns
-      .map((c, i) => `${i > 0 ? '<w:r><w:tab/></w:r>' : ''}<w:r>${runProps}<w:t xml:space="preserve">${escapeXml(c)}</w:t></w:r>`)
+      .map(
+        (c, i) =>
+          `${i > 0 ? '<w:r><w:tab/></w:r>' : ''}<w:r>${runProps}<w:t xml:space="preserve">${escapeXml(c)}</w:t></w:r>`,
+      )
       .join('')
     return `<w:p><w:pPr><w:tabs>${tabs}</w:tabs></w:pPr>${runs}</w:p>`
   }
@@ -47,7 +53,8 @@ function tableXml(rows: string[][]): string {
   const cols = rows.reduce((m, r) => Math.max(m, r.length), 1)
   const colW = Math.floor(CONTENT_WIDTH_DXA / cols)
   const grid = Array.from({ length: cols }, () => `<w:gridCol w:w="${colW}"/>`).join('')
-  const border = '<w:top w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:left w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:right w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/>'
+  const border =
+    '<w:top w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:left w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:right w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="BBBBBB"/>'
   const trs = rows
     .map((cells) => {
       const tcs = Array.from({ length: cols }, (_, c) => {
@@ -295,9 +302,7 @@ export async function buildPptx(slides: PptxSlideImage[]): Promise<Blob> {
 </Relationships>`,
   )
 
-  const slideIdList = slides
-    .map((_s, i) => `<p:sldId id="${256 + i}" r:id="rIdS${i + 1}"/>`)
-    .join('')
+  const slideIdList = slides.map((_s, i) => `<p:sldId id="${256 + i}" r:id="rIdS${i + 1}"/>`).join('')
 
   zip.file(
     'ppt/presentation.xml',
@@ -439,7 +444,7 @@ export async function buildEpub(chapters: EpubChapter[], bookTitle: string): Pro
 </container>`,
   )
 
-  const uid = `papermint-${Date.now()}`
+  const uid = `privacypdftools-${Date.now()}`
   const manifestItems = chapters
     .map((_c, i) => `<item id="ch${i + 1}" href="ch${i + 1}.xhtml" media-type="application/xhtml+xml"/>`)
     .join('\n    ')

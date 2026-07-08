@@ -25,10 +25,19 @@ export function friendlyError(err: unknown): string {
   if (lower.includes('encrypted') || lower.includes('password')) {
     return 'This PDF is password-protected. Use “Unlock PDF” first, or enter the password if the tool asks for one.'
   }
-  if (lower.includes('invalid pdf') || lower.includes('failed to parse') || lower.includes('no pdf header') || lower.includes('trailer')) {
+  if (
+    lower.includes('invalid pdf') ||
+    lower.includes('failed to parse') ||
+    lower.includes('no pdf header') ||
+    lower.includes('trailer')
+  ) {
     return 'This file appears to be corrupted or is not a valid PDF.'
   }
-  if (lower.includes('out of memory') || lower.includes('allocation') || lower.includes('array buffer')) {
+  if (
+    lower.includes('out of memory') ||
+    lower.includes('allocation') ||
+    lower.includes('array buffer')
+  ) {
     return 'The browser ran out of memory processing this file. Try a smaller file, fewer pages, or a lower quality setting.'
   }
   if (lower.includes('unsupported')) {

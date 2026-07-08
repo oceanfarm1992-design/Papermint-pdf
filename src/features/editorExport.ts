@@ -1,4 +1,12 @@
-import { LineCapStyle, StandardFonts, degrees, rgb, type PDFDocument, type PDFFont, type PDFPage } from '@cantoo/pdf-lib'
+import {
+  LineCapStyle,
+  StandardFonts,
+  degrees,
+  rgb,
+  type PDFDocument,
+  type PDFFont,
+  type PDFPage,
+} from '@cantoo/pdf-lib'
 import { openWithPdfLib, savePdfBlob } from '@/utils/pdf'
 import { displaySize, visualToContent } from '@/utils/stamp'
 import { winAnsiSafe } from '@/utils/textLayout'

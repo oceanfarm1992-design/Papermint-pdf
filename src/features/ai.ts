@@ -29,7 +29,11 @@ function splitSentences(text: string): string[] {
     .filter((s) => s.length > 25 && s.length < 600)
 }
 
-async function requireText(file: File, onProgress: (f: number) => void, signal: AbortSignal): Promise<string> {
+async function requireText(
+  file: File,
+  onProgress: (f: number) => void,
+  signal: AbortSignal,
+): Promise<string> {
   const { pages } = await extractLines(file, onProgress, signal)
   const text = pagesToPlainText(pages)
   if (text.trim().length < 40) {
@@ -70,7 +74,12 @@ export const summarize: ProcessFn = async (files, options, ctx) => {
     ...top.map((t) => `- ${t.s}`),
   ].join('\n')
 
-  return [{ name: `${baseName(file.name)} (summary).md`, blob: new Blob([summary], { type: 'text/markdown;charset=utf-8' }) }]
+  return [
+    {
+      name: `${baseName(file.name)} (summary).md`,
+      blob: new Blob([summary], { type: 'text/markdown;charset=utf-8' }),
+    },
+  ]
 }
 
 export const keywords: ProcessFn = async (files, _options, ctx) => {
@@ -94,7 +103,10 @@ export const keywords: ProcessFn = async (files, _options, ctx) => {
     }
   }
   const topUni = [...uni.entries()].sort((a, b) => b[1] - a[1]).slice(0, 25)
-  const topBi = [...bi.entries()].filter(([, c]) => c > 2).sort((a, b) => b[1] - a[1]).slice(0, 15)
+  const topBi = [...bi.entries()]
+    .filter(([, c]) => c > 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 15)
 
   const out = [
     `# Keywords — ${file.name}`,
@@ -105,7 +117,12 @@ export const keywords: ProcessFn = async (files, _options, ctx) => {
     ...(topBi.length > 0 ? ['## Common phrases', ...topBi.map(([w, c]) => `- ${w} (${c})`)] : []),
   ].join('\n')
 
-  return [{ name: `${baseName(file.name)} (keywords).md`, blob: new Blob([out], { type: 'text/markdown;charset=utf-8' }) }]
+  return [
+    {
+      name: `${baseName(file.name)} (keywords).md`,
+      blob: new Blob([out], { type: 'text/markdown;charset=utf-8' }),
+    },
+  ]
 }
 
 export const outline: ProcessFn = async (files, _options, ctx) => {
@@ -134,7 +151,11 @@ export const outline: ProcessFn = async (files, _options, ctx) => {
       // No bookmarks — detect headings from font sizes
       await doc.loadingTask.destroy()
       ctx.onProgress(0.3, 'Detecting headings')
-      const { pages, medianSize } = await extractLines(file, (f) => ctx.onProgress(0.3 + f * 0.6), ctx.signal)
+      const { pages, medianSize } = await extractLines(
+        file,
+        (f) => ctx.onProgress(0.3 + f * 0.6),
+        ctx.signal,
+      )
       lines.push('_No embedded bookmarks — headings detected from font sizes._', '')
       let found = 0
       pages.forEach((pageLines, p) => {
@@ -147,10 +168,20 @@ export const outline: ProcessFn = async (files, _options, ctx) => {
         }
       })
       if (found === 0) lines.push('_No headings could be detected in this document._')
-      return [{ name: `${baseName(file.name)} (outline).md`, blob: new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }) }]
+      return [
+        {
+          name: `${baseName(file.name)} (outline).md`,
+          blob: new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }),
+        },
+      ]
     }
   } finally {
     await doc.loadingTask.destroy().catch(() => undefined)
   }
-  return [{ name: `${baseName(file.name)} (outline).md`, blob: new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }) }]
+  return [
+    {
+      name: `${baseName(file.name)} (outline).md`,
+      blob: new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }),
+    },
+  ]
 }

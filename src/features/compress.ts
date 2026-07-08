@@ -1,6 +1,13 @@
 import { PDFDocument } from '@cantoo/pdf-lib'
 import type { OutputFile, ProcessFn } from '@/types/tool'
-import { canvasToBytes, openWithPdfJs, openWithPdfLib, renderPageToCanvas, savePdfBlob, throwIfAborted } from '@/utils/pdf'
+import {
+  canvasToBytes,
+  openWithPdfJs,
+  openWithPdfLib,
+  renderPageToCanvas,
+  savePdfBlob,
+  throwIfAborted,
+} from '@/utils/pdf'
 import { baseName } from '@/utils/format'
 
 /** render scale + JPEG quality per level */
@@ -27,7 +34,10 @@ export const compressPdf: ProcessFn = async (files, options, ctx) => {
       const blob = await savePdfBlob(doc)
       outputs.push({
         name: `${baseName(file.name)} (compressed).pdf`,
-        blob: blob.size < file.size ? blob : new Blob([await file.arrayBuffer()], { type: 'application/pdf' }),
+        blob:
+          blob.size < file.size
+            ? blob
+            : new Blob([await file.arrayBuffer()], { type: 'application/pdf' }),
       })
       continue
     }
@@ -35,11 +45,14 @@ export const compressPdf: ProcessFn = async (files, options, ctx) => {
     const src = await openWithPdfJs(file)
     try {
       const out = await PDFDocument.create()
-      out.setProducer('Papermint — local PDF tools')
+      out.setProducer('Privacy PDF Tools — privacypdftools.com')
       const total = src.numPages
       for (let i = 1; i <= total; i++) {
         throwIfAborted(ctx.signal)
-        ctx.onProgress(fileBase + fileSpan * ((i - 1) / total) * 0.95, `Compressing page ${i} of ${total}`)
+        ctx.onProgress(
+          fileBase + fileSpan * ((i - 1) / total) * 0.95,
+          `Compressing page ${i} of ${total}`,
+        )
         const page = await src.getPage(i)
         const viewport = page.getViewport({ scale: 1 })
         const canvas = await renderPageToCanvas(page, level.scale)

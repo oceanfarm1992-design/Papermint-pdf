@@ -3,7 +3,13 @@ import { Download, Loader2, Trash2 } from 'lucide-react'
 import { PDFDocument } from '@cantoo/pdf-lib'
 import type { ToolDef } from '@/types/tool'
 import ToolShell from '@/components/ToolShell'
-import { canvasToBytes, openWithPdfJs, openWithPdfLib, renderPageToCanvas, savePdfBlob } from '@/utils/pdf'
+import {
+  canvasToBytes,
+  openWithPdfJs,
+  openWithPdfLib,
+  renderPageToCanvas,
+  savePdfBlob,
+} from '@/utils/pdf'
 import { downloadBlob } from '@/utils/download'
 import { friendlyError, UserError } from '@/utils/errors'
 import { baseName } from '@/utils/format'
@@ -75,7 +81,7 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
       const jsDoc = await openWithPdfJs(file)
       const srcDoc = await openWithPdfLib(file)
       const out = await PDFDocument.create()
-      out.setProducer('Papermint — local PDF tools')
+      out.setProducer('Privacy PDF Tools — privacypdftools.com')
 
       for (let i = 0; i < jsDoc.numPages; i++) {
         setProgress(`Processing page ${i + 1} of ${jsDoc.numPages}`)
@@ -117,7 +123,10 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
   return (
     <ToolShell tool={tool} file={file} onFiles={(fs) => fs[0] && void loadFile(fs[0])} wide>
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300"
+        >
           {error}
         </p>
       )}
@@ -126,11 +135,25 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
           Drag black boxes over anything sensitive. Pages with boxes are re-rendered so the content
           underneath is permanently removed.
         </p>
-        <button type="button" className="btn-secondary" disabled={boxes.length === 0} onClick={() => setBoxes([])}>
+        <button
+          type="button"
+          className="btn-secondary"
+          disabled={boxes.length === 0}
+          onClick={() => setBoxes([])}
+        >
           <Trash2 className="h-4 w-4" aria-hidden /> Clear all ({boxes.length})
         </button>
-        <button type="button" className="btn-primary" disabled={busy || !file} onClick={() => void apply()}>
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Download className="h-4 w-4" aria-hidden />}
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={busy || !file}
+          onClick={() => void apply()}
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden />
+          )}
           {busy ? progress || 'Working…' : 'Redact & download'}
         </button>
       </div>
@@ -150,7 +173,13 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
               const d = drag.current
               if (!d || d.page !== i) return
               const [x, y] = point(e, i)
-              setDraft({ page: i, x: Math.min(d.sx, x), y: Math.min(d.sy, y), w: Math.abs(x - d.sx), h: Math.abs(y - d.sy) })
+              setDraft({
+                page: i,
+                x: Math.min(d.sx, x),
+                y: Math.min(d.sy, y),
+                w: Math.abs(x - d.sx),
+                h: Math.abs(y - d.sy),
+              })
             }}
             onPointerUp={() => {
               if (draft && draft.w > 4 && draft.h > 4) setBoxes((prev) => [...prev, draft])
@@ -159,31 +188,33 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
             }}
           >
             <img src={meta.url} alt={`Page ${i + 1}`} className="block w-full" draggable={false} />
-            {[...boxes.filter((b) => b.page === i), ...(draft && draft.page === i ? [draft] : [])].map((b, k) => (
-              <div
-                key={k}
-                className="group absolute bg-black"
-                style={{
-                  left: `${(b.x / meta.w) * 100}%`,
-                  top: `${(b.y / meta.h) * 100}%`,
-                  width: `${(b.w / meta.w) * 100}%`,
-                  height: `${(b.h / meta.h) * 100}%`,
-                }}
-              >
-                <button
-                  type="button"
-                  aria-label="Remove this redaction box"
-                  className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setBoxes((prev) => prev.filter((x) => x !== b))
+            {[...boxes.filter((b) => b.page === i), ...(draft && draft.page === i ? [draft] : [])].map(
+              (b, k) => (
+                <div
+                  key={k}
+                  className="group absolute bg-black"
+                  style={{
+                    left: `${(b.x / meta.w) * 100}%`,
+                    top: `${(b.y / meta.h) * 100}%`,
+                    width: `${(b.w / meta.w) * 100}%`,
+                    height: `${(b.h / meta.h) * 100}%`,
                   }}
                 >
-                  ×
-                </button>
-              </div>
-            ))}
+                  <button
+                    type="button"
+                    aria-label="Remove this redaction box"
+                    className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setBoxes((prev) => prev.filter((x) => x !== b))
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ),
+            )}
             <span className="absolute -bottom-5 left-0 text-xs text-neutral-400">Page {i + 1}</span>
           </div>
         ))}

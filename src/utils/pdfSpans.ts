@@ -33,10 +33,7 @@ function classifyFamily(fontFamily: string | undefined, fontName: string): FontF
  * scale-1 viewport space (top-left origin) so they line up with the editor's
  * annotation overlay. Rotated pages are skipped for editing (returns []).
  */
-export async function extractEditableSpans(
-  page: PDFPageProxy,
-  pageIndex: number,
-): Promise<EditSpan[]> {
+export async function extractEditableSpans(page: PDFPageProxy, pageIndex: number): Promise<EditSpan[]> {
   const rotation = ((page.rotate % 360) + 360) % 360
   if (rotation !== 0) return [] // in-place editing only supported on upright pages
   const viewport = page.getViewport({ scale: 1 })

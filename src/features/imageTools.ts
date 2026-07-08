@@ -13,7 +13,10 @@ interface PdfJsImage {
   kind?: number
 }
 
-function objFromPage(page: { objs: { get: (id: string, cb: (v: unknown) => void) => void } }, id: string): Promise<PdfJsImage | null> {
+function objFromPage(
+  page: { objs: { get: (id: string, cb: (v: unknown) => void) => void } },
+  id: string,
+): Promise<PdfJsImage | null> {
   return new Promise((resolve) => {
     const timer = setTimeout(() => resolve(null), 3000)
     try {

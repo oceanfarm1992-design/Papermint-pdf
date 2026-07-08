@@ -1,12 +1,7 @@
 import { degrees, rgb, type PDFFont, type PDFPage, type RGB } from '@cantoo/pdf-lib'
 
 export type StampPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right'
+  'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
 
 /** Displayed page size, accounting for /Rotate. */
 export function displaySize(page: PDFPage): { w: number; h: number; rot: number } {

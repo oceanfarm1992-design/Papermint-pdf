@@ -1,0 +1,121 @@
+# Cloudflare deployment.
+#  - Push to main  → production deploy via `wrangler deploy` (Workers static assets).
+#  - Pull request  → uploads a preview version and comments the preview URL.
+# Both self-skip when CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secrets are
+# absent (e.g. when Cloudflare Workers Builds already deploys on git push —
+# don't configure both, or you will double-deploy).
+# A failed production deploy automatically opens a GitHub issue.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: PR preview deploy
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Skip notice when Cloudflare secrets missing
+        if: env.HAS_CF != 'true'
+        run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set — preview deploy skipped."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_CF == 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_CF == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build
+        if: env.HAS_CF == 'true'
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload preview version
+        if: env.HAS_CF == 'true'
+        id: preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: versions upload
+
+      - name: Comment preview URL
+        if: env.HAS_CF == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview-deploy
+          message: |
+            ### ☁️ Cloudflare preview
+            ```
+            ${{ steps.preview.outputs.command-output }}
+            ```
+            The `Version Preview URL` above serves this PR's build.
+
+  production:
+    name: Production deploy
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Skip notice when Cloudflare secrets missing
+        if: env.HAS_CF != 'true'
+        run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set — production deploy skipped."
+
+      - uses: actions/checkout@v4
+        if: env.HAS_CF == 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_CF == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build
+        if: env.HAS_CF == 'true'
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Cloudflare Workers
+        if: env.HAS_CF == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+      - name: Open issue on failed deploy
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔥 Production deploy failed — ${context.sha.slice(0, 7)}`,
+              labels: ['deployment', 'priority-critical'],
+              body: `The production deploy for \`${context.sha}\` failed.\n\n➡️ [Failed run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+            })

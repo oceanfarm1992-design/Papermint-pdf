@@ -1,11 +1,21 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { visualizer } from 'rollup-plugin-visualizer'
 import { fileURLToPath } from 'node:url'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+// `vite build --mode analyze` additionally emits dist/stats.html (treemap of
+// every module with gzip/brotli sizes) — used by the CI bundle-analysis job.
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    tailwindcss(),
+    ...(mode === 'analyze'
+      ? [visualizer({ filename: 'dist/stats.html', template: 'treemap', gzipSize: true, brotliSize: true })]
+      : []),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -31,4 +41,14 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
-})
+  test: {
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      include: ['src/**'],
+      exclude: ['src/**/*.d.ts'],
+      reporter: ['text', 'lcov', 'json-summary'],
+    },
+  },
+}))

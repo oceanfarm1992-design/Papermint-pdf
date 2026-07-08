@@ -65,7 +65,7 @@ export default function Layout() {
         <div className="border-b border-rose-200/60 bg-rose-50/70 dark:border-rose-500/20 dark:bg-rose-500/5">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-1.5 text-sm">
             <span className="inline-flex items-center gap-1.5 font-medium text-rose-700 dark:text-rose-300">
-              <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Love Papermint? Support it:
+              <Heart className="h-3.5 w-3.5 fill-current" aria-hidden /> Love these tools? Support us:
             </span>
             {DONATE_LINKS.map((d) => (
               <a
@@ -87,10 +87,7 @@ export default function Layout() {
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
             <img src="/icons/icon.svg" alt="" className="h-7 w-7" aria-hidden />
-            <span>
-              Papermint
-              <span className="sr-only"> — private PDF tools</span>
-            </span>
+            <span>Privacy PDF Tools</span>
           </Link>
           <nav aria-label="Main" className="hidden items-center gap-1 sm:flex">
             <NavLink to="/" className={navLink} end>
@@ -118,9 +115,15 @@ export default function Layout() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4">
           <p>🔒 Files are processed locally in your browser — nothing is ever uploaded.</p>
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link to="/privacy" className="hover:text-neutral-900 dark:hover:text-white">Privacy</Link>
-            <Link to="/terms" className="hover:text-neutral-900 dark:hover:text-white">Terms</Link>
-            <Link to="/contact" className="hover:text-neutral-900 dark:hover:text-white">Contact</Link>
+            <Link to="/privacy" className="hover:text-neutral-900 dark:hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/terms" className="hover:text-neutral-900 dark:hover:text-white">
+              Terms
+            </Link>
+            <Link to="/contact" className="hover:text-neutral-900 dark:hover:text-white">
+              Contact
+            </Link>
             <a
               href="https://github.com"
               target="_blank"

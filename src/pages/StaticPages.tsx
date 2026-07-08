@@ -14,18 +14,25 @@ function Page({ title, children }: { title: string; children: React.ReactNode })
 
 export function About() {
   return (
-    <Page title="About Papermint">
+    <Page title="About Privacy PDF Tools">
       <p>
-        Papermint is a complete PDF toolkit that runs <strong>entirely in your browser</strong>. All{' '}
-        {TOOLS.length} tools — merging, splitting, compressing, converting, editing, signing, OCR and
-        more — are powered by WebAssembly and modern browser APIs. There is no server-side processing
-        at all.
+        Privacy PDF Tools is a complete PDF toolkit that runs <strong>entirely in your browser</strong>.
+        All {TOOLS.length} tools — merging, splitting, compressing, converting, editing, signing, OCR and
+        more — are powered by WebAssembly and modern browser APIs. There is no server-side processing at
+        all.
       </p>
       <h2>Why local processing matters</h2>
       <ul>
-        <li><strong>Privacy</strong> — your documents never leave your device. There is nothing to leak, sell or subpoena.</li>
-        <li><strong>Speed</strong> — no upload/download round-trips. A 100-page merge takes milliseconds.</li>
-        <li><strong>Reliability</strong> — most tools keep working even when you’re offline.</li>
+        <li>
+          <strong>Privacy</strong> — your documents never leave your device. There is nothing to leak,
+          sell or subpoena.
+        </li>
+        <li>
+          <strong>Speed</strong> — no upload/download round-trips. A 100-page merge takes milliseconds.
+        </li>
+        <li>
+          <strong>Reliability</strong> — most tools keep working even when you’re offline.
+        </li>
       </ul>
       <h2>Technology</h2>
       <p>
@@ -46,9 +53,9 @@ export function Privacy() {
       </p>
       <h2>No uploads</h2>
       <p>
-        Every tool runs locally in your browser using JavaScript and WebAssembly. Your PDFs and
-        images are read directly into your browser’s memory, processed there, and saved back to your
-        device. No file content, file name or metadata is ever transmitted to us or anyone else.
+        Every tool runs locally in your browser using JavaScript and WebAssembly. Your PDFs and images
+        are read directly into your browser’s memory, processed there, and saved back to your device. No
+        file content, file name or metadata is ever transmitted to us or anyone else.
       </p>
       <h2>No accounts</h2>
       <p>There is no signup, no login, and no way for us to identify you.</p>
@@ -61,22 +68,21 @@ export function Privacy() {
       </ul>
       <h2>No cookies</h2>
       <p>
-        Papermint sets no cookies. Your browser’s <em>localStorage</em> is used only for optional
-        preferences: your theme choice and your favorite/recent tool names. It never contains files,
-        file names or document content. Clear your browser data at any time to remove it.
+        Privacy PDF Tools sets no cookies. Your browser’s <em>localStorage</em> is used only for optional
+        preferences: your theme choice and your favorite/recent tool names. It never contains files, file
+        names or document content. Clear your browser data at any time to remove it.
       </p>
       <h2>The one network exception</h2>
       <p>
-        The OCR tools download a language pack (a public, open-source Tesseract model of a few MB)
-        from a CDN the first time you use them, and cache it locally. This request contains no
-        information about your document. Every other tool makes zero network requests while
-        processing.
+        The OCR tools download a language pack (a public, open-source Tesseract model of a few MB) from a
+        CDN the first time you use them, and cache it locally. This request contains no information about
+        your document. Every other tool makes zero network requests while processing.
       </p>
       <h2>Hosting</h2>
       <p>
-        The static site is delivered by Cloudflare Pages, which may log standard web requests (IP,
-        URL, user agent) to operate its network, like any website host. Your documents are never part
-        of any request.
+        The static site is delivered by Cloudflare Pages, which may log standard web requests (IP, URL,
+        user agent) to operate its network, like any website host. Your documents are never part of any
+        request.
       </p>
     </Page>
   )
@@ -85,7 +91,7 @@ export function Privacy() {
 export function Terms() {
   return (
     <Page title="Terms of Use">
-      <p>Papermint is provided free of charge, as is, in the hope that it is useful.</p>
+      <p>Privacy PDF Tools is provided free of charge, as is, in the hope that it is useful.</p>
       <h2>Use</h2>
       <ul>
         <li>You may use the tools for any lawful personal or commercial purpose.</li>
@@ -94,9 +100,9 @@ export function Terms() {
       </ul>
       <h2>No warranty</h2>
       <p>
-        The software is provided “as is”, without warranty of any kind. Always keep your original
-        files; verify results before deleting sources. In no event shall the authors be liable for
-        any claim or damages arising from the use of the software.
+        The software is provided “as is”, without warranty of any kind. Always keep your original files;
+        verify results before deleting sources. In no event shall the authors be liable for any claim or
+        damages arising from the use of the software.
       </p>
       <h2>License</h2>
       <p>The source code is available under the MIT License.</p>
@@ -108,11 +114,14 @@ export function Contact() {
   return (
     <Page title="Contact">
       <p>
-        Questions, bug reports or ideas? Email us — that’s the only channel, because there are no
-        forms and no accounts:
+        Questions, bug reports or ideas? Email us — that’s the only channel, because there are no forms
+        and no accounts:
       </p>
       <p className="text-lg">
-        <a className="font-medium text-brand-600 underline dark:text-brand-400" href={`mailto:${CONTACT_EMAIL}`}>
+        <a
+          className="font-medium text-brand-600 underline dark:text-brand-400"
+          href={`mailto:${CONTACT_EMAIL}`}
+        >
           {CONTACT_EMAIL}
         </a>
       </p>
