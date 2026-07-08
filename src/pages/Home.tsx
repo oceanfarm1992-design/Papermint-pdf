@@ -4,11 +4,20 @@ import { Clock, Search, Star } from 'lucide-react'
 import { CATEGORIES, TOOLS, searchTools, toolsByCategory } from '@/data/tools'
 import ToolCard from '@/components/ToolCard'
 import PrivacyNote from '@/components/PrivacyNote'
+import PrivacyContent from '@/components/PrivacyContent'
 import { FAVORITES_KEY, RECENTS_KEY, useLocalList } from '@/hooks/useLocalList'
+import { useSeo } from '@/hooks/useSeo'
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
+
+  useSeo({
+    title: 'Privacy PDF Tools — Free & Private, Never Upload Your Files',
+    description:
+      'Merge, split, compress, convert, edit, sign and OCR PDFs — free and 100% in your browser. No uploads, no accounts, no tracking. Your files never leave your device.',
+    path: '/',
+  })
   const { items: favorites } = useLocalList(FAVORITES_KEY, 50)
   const { items: recents } = useLocalList(RECENTS_KEY, 8)
 
@@ -154,6 +163,8 @@ export default function Home() {
               </section>
             )
           })}
+
+          <PrivacyContent />
         </>
       )}
     </div>
