@@ -81,7 +81,7 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
       const jsDoc = await openWithPdfJs(file)
       const srcDoc = await openWithPdfLib(file)
       const out = await PDFDocument.create()
-      out.setProducer('Papermint — local PDF tools')
+      out.setProducer('Privacy PDF Tools — privacypdftools.com')
 
       for (let i = 0; i < jsDoc.numPages; i++) {
         setProgress(`Processing page ${i + 1} of ${jsDoc.numPages}`)

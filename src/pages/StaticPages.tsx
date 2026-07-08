@@ -14,10 +14,10 @@ function Page({ title, children }: { title: string; children: React.ReactNode })
 
 export function About() {
   return (
-    <Page title="About Papermint">
+    <Page title="About Privacy PDF Tools">
       <p>
-        Papermint is a complete PDF toolkit that runs <strong>entirely in your browser</strong>. All{' '}
-        {TOOLS.length} tools — merging, splitting, compressing, converting, editing, signing, OCR and
+        Privacy PDF Tools is a complete PDF toolkit that runs <strong>entirely in your browser</strong>.
+        All {TOOLS.length} tools — merging, splitting, compressing, converting, editing, signing, OCR and
         more — are powered by WebAssembly and modern browser APIs. There is no server-side processing at
         all.
       </p>
@@ -68,7 +68,7 @@ export function Privacy() {
       </ul>
       <h2>No cookies</h2>
       <p>
-        Papermint sets no cookies. Your browser’s <em>localStorage</em> is used only for optional
+        Privacy PDF Tools sets no cookies. Your browser’s <em>localStorage</em> is used only for optional
         preferences: your theme choice and your favorite/recent tool names. It never contains files, file
         names or document content. Clear your browser data at any time to remove it.
       </p>
@@ -91,7 +91,7 @@ export function Privacy() {
 export function Terms() {
   return (
     <Page title="Terms of Use">
-      <p>Papermint is provided free of charge, as is, in the hope that it is useful.</p>
+      <p>Privacy PDF Tools is provided free of charge, as is, in the hope that it is useful.</p>
       <h2>Use</h2>
       <ul>
         <li>You may use the tools for any lawful personal or commercial purpose.</li>

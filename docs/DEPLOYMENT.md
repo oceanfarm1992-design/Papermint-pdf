@@ -19,7 +19,7 @@ first-class target.
 
 ```bash
 npm run build
-npx wrangler pages deploy dist          # first run: creates the "papermint" Pages project
+npx wrangler pages deploy dist          # first run: creates the Pages project
 # or simply:
 npm run deploy
 ```

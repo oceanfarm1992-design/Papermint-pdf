@@ -1108,7 +1108,7 @@ export const TOOLS: ToolDef[] = [
         placeholder: 'Leave empty if none',
       },
     ],
-    note: 'Only works when you know the password. Papermint does not crack passwords.',
+    note: 'Only works when you know the password. Privacy PDF Tools does not crack passwords.',
     run: () => import('@/features/security').then((m) => m.unlockPdf),
   },
   {

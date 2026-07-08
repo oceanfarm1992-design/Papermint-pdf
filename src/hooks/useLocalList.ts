@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from 'react'
 
 /**
  * A small persisted string list (favorite tool slugs, recent tool slugs).
- * The ONLY data Papermint ever writes to localStorage is the theme and these
+ * The ONLY data Privacy PDF Tools ever writes to localStorage is the theme and these
  * two lists of tool slugs — never file names or file content.
  */
 

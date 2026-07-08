@@ -1,12 +1,14 @@
-# ðŸƒ Papermint â€” Private PDF Tools
+# 🍃 Privacy PDF Tools
 
 **Every PDF tool you need. Zero uploads.**
 
-Papermint is a complete, production-ready PDF toolkit that runs **entirely in the browser**.
-50+ tools â€” merge, split, compress, convert, edit, sign, OCR, redact and more â€” with **no backend,
+Privacy PDF Tools is a complete, production-ready PDF toolkit that runs **entirely in the browser**.
+50+ tools — merge, split, compress, convert, edit, sign, OCR, redact and more — with **no backend,
 no accounts, no tracking and no cookies**. Files never leave the user's device.
 
-> ðŸ”’ Your files never leave your device. Everything is processed locally inside your browser.
+> 🔒 Your files never leave your device. Everything is processed locally inside your browser.
+
+Live at **[privacypdftools.com](https://privacypdftools.com)**.
 
 ## Features
 
@@ -22,7 +24,7 @@ no accounts, no tracking and no cookies**. Files never leave the user's device.
 | **Forms & Signing** | Fill AcroForms, Create fillable forms, Sign (draw / type / upload) |
 | **Images** | Extract embedded images, Enhance scans (brightness/contrast/sharpen/grayscale) |
 | **Compare** | Side-by-side with pixel-level difference highlighting |
-| **Smart tools** | Local summarization, keyword extraction, outline/TOC builder â€” no cloud AI |
+| **Smart tools** | Local summarization, keyword extraction, outline/TOC builder — no cloud AI |
 
 Plus: dark/light/system theme, favorites, recent tools, keyboard shortcuts, drag & drop
 (files, folders, paste), batch processing, ZIP export, rename before download, PDF preview with
@@ -43,43 +45,42 @@ npm run lint       # oxlint
 npm run format     # prettier
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare
 
-**Option A â€” dashboard (recommended):** create a Pages project connected to this repo with:
-
-- Build command: `npm run build`
-- Build output directory: `dist`
-
-**Option B â€” CLI:**
+The build output (`dist/`) is 100% static files. This project deploys as a Cloudflare **Worker
+serving static assets** (see [`wrangler.toml`](wrangler.toml)).
 
 ```bash
-npm run deploy     # builds, then `wrangler pages deploy dist`
+npm run deploy     # builds, then `wrangler deploy`
 ```
 
-The repo ships with everything Pages needs:
+The repo ships with everything the deploy needs:
 
-- [`wrangler.toml`](wrangler.toml) â€” project config (`pages_build_output_dir = "dist"`)
-- [`public/_headers`](public/_headers) â€” security headers + immutable caching for hashed assets
-- [`public/_redirects`](public/_redirects) â€” SPA fallback (`/* â†’ /index.html 200`)
+- [`wrangler.toml`](wrangler.toml) — serves `./dist` as static assets with single-page-application
+  fallback so client-side routes resolve to `index.html`
+- [`public/_headers`](public/_headers) — security headers + immutable caching for hashed assets
 - `robots.txt`, `sitemap.xml` (auto-generated from the tool registry at build time), OpenGraph/Twitter
   meta, JSON-LD structured data, `manifest.webmanifest` + service worker for PWA/offline
 
-No Node server runs after build â€” the output is 100% static files. See
-[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full guide including cache strategy.
+The custom domain (`privacypdftools.com`) is attached to the Worker from the Cloudflare dashboard
+(**Workers & Pages → the Worker → Settings → Domains & Routes**). See
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full guide, and
+[docs/AUTOMATION.md](docs/AUTOMATION.md) for the CI/CD pipeline.
 
 ## Tech stack
 
 - **React 19 + TypeScript (strict)** on Vite 8, React Router, TailwindCSS 4, Framer Motion
-- **[@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib)** â€” PDF structure editing, forms, AES encryption/decryption
-- **[pdf.js](https://mozilla.github.io/pdf.js/)** â€” rendering, text extraction (runs in its own Web Worker)
-- **[tesseract.js](https://tesseract.projectnaptha.com/)** â€” WASM OCR (runs in Web Workers)
-- **JSZip** â€” ZIP export and hand-built DOCX/XLSX/PPTX/EPUB writers
-- **browser-image-compression** â€” image compression in a Web Worker
+- **[@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib)** — PDF structure editing, forms, AES encryption/decryption
+- **[pdf.js](https://mozilla.github.io/pdf.js/)** — rendering, text extraction (runs in its own Web Worker)
+- **[tesseract.js](https://tesseract.projectnaptha.com/)** — WASM OCR (runs in Web Workers)
+- **JSZip** — ZIP export and hand-built DOCX/XLSX/PPTX/EPUB writers
+- **browser-image-compression** — image compression in a Web Worker
 
 ## Documentation
 
-- [Architecture](docs/ARCHITECTURE.md) â€” project structure, tool registry pattern, data flow
-- [Security review](docs/SECURITY.md) â€” proof that no file data leaves the browser
+- [Architecture](docs/ARCHITECTURE.md) — project structure, tool registry pattern, data flow
+- [Automation & CI/CD](docs/AUTOMATION.md) — every workflow, quality gate and maintenance policy
+- [Security review](docs/SECURITY.md) — proof that no file data leaves the browser
 - [Browser compatibility](docs/BROWSER_COMPAT.md)
 - [Performance notes](docs/PERFORMANCE.md)
 - [Deployment guide](docs/DEPLOYMENT.md)
@@ -90,9 +91,9 @@ No Node server runs after build â€” the output is 100% static files. See
   browser; the editor provides the whiteout + retype workflow instead.
 - **Office conversions** are text-focused: headings, paragraphs and lists convert well; exact layout,
   themes, images-in-docx and complex tables are simplified.
-- **PDF â†’ SVG** embeds a raster render (true vector extraction isn't feasible in-browser).
+- **PDF → SVG** embeds a raster render (true vector extraction isn't feasible in-browser).
 - **OCR language packs** (a few MB, open-source Tesseract models) are fetched once from a CDN and
-  cached â€” the only network request any tool ever makes, and it never contains user data.
+  cached — the only network request any tool ever makes, and it never contains user data.
 - **Standard-font text stamping** (watermarks, page numbers, searchable-PDF layer) supports
   Latin-based (WinAnsi) characters; unsupported characters are substituted.
 

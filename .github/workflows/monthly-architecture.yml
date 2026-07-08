@@ -47,7 +47,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            You are performing the monthly architecture review of Papermint, a
+            You are performing the monthly architecture review of Privacy PDF Tools, a
             browser-only PDF toolkit (React 19 + Vite + TS strict + Tailwind 4,
             deployed on Cloudflare Workers static assets). Privacy constraint:
             all processing is local; nothing may introduce uploads.

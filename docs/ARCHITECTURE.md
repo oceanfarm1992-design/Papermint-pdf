@@ -2,7 +2,7 @@
 
 ## Guiding principle
 
-Papermint is a **static single-page application**. There is no backend, no API, no database.
+Privacy PDF Tools is a **static single-page application**. There is no backend, no API, no database.
 Every byte of PDF processing happens in the browser tab via JavaScript, Web Workers and WebAssembly.
 
 ```text

@@ -45,7 +45,7 @@ export const compressPdf: ProcessFn = async (files, options, ctx) => {
     const src = await openWithPdfJs(file)
     try {
       const out = await PDFDocument.create()
-      out.setProducer('Papermint — local PDF tools')
+      out.setProducer('Privacy PDF Tools — privacypdftools.com')
       const total = src.numPages
       for (let i = 1; i <= total; i++) {
         throwIfAborted(ctx.signal)

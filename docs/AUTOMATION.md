@@ -1,4 +1,4 @@
-# Papermint CI/CD & Automation Platform
+# Privacy PDF Tools — CI/CD & Automation Platform
 
 This document describes every automated workflow in the repository: what it
 does, when it runs, which quality gates it enforces, and how to operate it.

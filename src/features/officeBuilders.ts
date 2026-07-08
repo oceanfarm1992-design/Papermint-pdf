@@ -444,7 +444,7 @@ export async function buildEpub(chapters: EpubChapter[], bookTitle: string): Pro
 </container>`,
   )
 
-  const uid = `papermint-${Date.now()}`
+  const uid = `privacypdftools-${Date.now()}`
   const manifestItems = chapters
     .map((_c, i) => `<item id="ch${i + 1}" href="ch${i + 1}.xhtml" media-type="application/xhtml+xml"/>`)
     .join('\n    ')

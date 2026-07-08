@@ -4,7 +4,7 @@ import { makePdf, asUpload } from './helpers/pdf'
 test.describe('app shell', () => {
   test('home page renders the tool catalog', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveTitle(/Papermint/)
+    await expect(page).toHaveTitle(/Privacy PDF Tools/)
     await expect(page.getByRole('link', { name: /merge pdf/i }).first()).toBeVisible()
     await expect(page.getByRole('main')).toBeVisible()
   })

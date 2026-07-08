@@ -1,6 +1,6 @@
 {
-  "name": "Papermint — Private PDF Tools",
-  "short_name": "Papermint",
+  "name": "Privacy PDF Tools",
+  "short_name": "Privacy PDF",
   "description": "Free PDF tools that run entirely in your browser. No uploads, no tracking.",
   "start_url": "/",
   "display": "standalone",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Papermint dependency automation — grouped, risk-labelled PRs; never auto-merged. Every PR must pass the full CI quality-gate pipeline before a human merges it.",
+  "description": "Privacy PDF Tools dependency automation — grouped, risk-labelled PRs; never auto-merged. Every PR must pass the full CI quality-gate pipeline before a human merges it.",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",

@@ -1,5 +1,5 @@
 /**
- * Papermint service worker — makes the app shell and tool code work offline.
+ * Privacy PDF Tools service worker — makes the app shell and tool code work offline.
  * Only same-origin GET requests are ever handled; nothing is sent anywhere.
  */
 const CACHE = 'papermint-v1'

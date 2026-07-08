@@ -60,10 +60,10 @@ export default function ToolPage() {
   useEffect(() => {
     if (tool) {
       addRecent(tool.slug)
-      document.title = `${tool.name} — Papermint`
+      document.title = `${tool.name} — Privacy PDF Tools`
     }
     return () => {
-      document.title = 'Papermint — Free PDF Tools That Never Upload Your Files'
+      document.title = 'Privacy PDF Tools — Free & Private, Never Upload Your Files'
     }
   }, [tool, addRecent])
 

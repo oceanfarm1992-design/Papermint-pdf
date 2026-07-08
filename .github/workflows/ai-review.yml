@@ -41,7 +41,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            Review this pull request as a senior reviewer for Papermint, a
+            Review this pull request as a senior reviewer for Privacy PDF Tools, a
             browser-only PDF toolkit (React 19 + Vite + TypeScript strict +
             Tailwind v4). Non-negotiable project invariants:
               - Files are NEVER uploaded anywhere; no network calls during
@@ -82,7 +82,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            This is an automated dependency-update PR for Papermint (browser-only
+            This is an automated dependency-update PR for Privacy PDF Tools (browser-only
             PDF toolkit). For EACH package being updated, research and report:
               1. Why the release exists (changelog / release-notes digest).
               2. Breaking changes and deprecations, especially anything touching

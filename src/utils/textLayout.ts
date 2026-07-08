@@ -74,7 +74,7 @@ function wrap(font: PDFFont, text: string, size: number, maxWidth: number): stri
 export async function paragraphsToPdf(paras: Paragraph[], title?: string): Promise<PDFDocument> {
   const doc = await PDFDocument.create()
   if (title) doc.setTitle(title)
-  doc.setProducer('Papermint — local PDF tools')
+  doc.setProducer('Privacy PDF Tools — privacypdftools.com')
 
   const regular = await doc.embedFont(StandardFonts.Helvetica)
   const bold = await doc.embedFont(StandardFonts.HelveticaBold)

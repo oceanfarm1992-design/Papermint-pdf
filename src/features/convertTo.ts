@@ -46,7 +46,7 @@ function imageDims(file: File): Promise<{ w: number; h: number }> {
 
 export const imagesToPdf: ProcessFn = async (files, options, ctx) => {
   const doc = await PDFDocument.create()
-  doc.setProducer('Papermint — local PDF tools')
+  doc.setProducer('Privacy PDF Tools — privacypdftools.com')
   const pageSize = String(options.pageSize ?? 'fit')
   const landscape = Boolean(options.landscape)
 
@@ -82,7 +82,7 @@ export const imagesToPdf: ProcessFn = async (files, options, ctx) => {
 
 export const svgToPdf: ProcessFn = async (files, _options, ctx) => {
   const doc = await PDFDocument.create()
-  doc.setProducer('Papermint — local PDF tools')
+  doc.setProducer('Privacy PDF Tools — privacypdftools.com')
 
   for (let i = 0; i < files.length; i++) {
     throwIfAborted(ctx.signal)
