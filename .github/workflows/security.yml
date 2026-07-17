@@ -57,6 +57,11 @@ jobs:
   gitleaks:
     name: Secret scanning (gitleaks)
     runs-on: ubuntu-latest
+    # gitleaks-action lists the PR's commits via the API on pull_request runs,
+    # which needs pull-requests: read on top of the default contents: read.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -69,6 +74,11 @@ jobs:
     name: Dependency review (PR diff)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    # The Dependency Review API requires GitHub Advanced Security on private
+    # repos; until that is enabled (or the repo is public) the action errors
+    # out. Keep it non-blocking so it never blocks PRs, and it will start
+    # working automatically once GHAS/Dependency graph is available.
+    continue-on-error: true
     permissions:
       contents: read
       pull-requests: write
