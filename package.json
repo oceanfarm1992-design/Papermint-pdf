@@ -8,6 +8,7 @@
     "dev": "vite",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/prerender.mjs",
     "analyze": "vite build --mode analyze",
     "lint": "oxlint",
     "typecheck": "tsc -b",
