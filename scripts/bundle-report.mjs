@@ -137,7 +137,12 @@ lines.push('', '</details>')
 
 const gates = []
 if (baseline) {
-  const growthKb = (report.total.gzip - baseline.total.gzip) / 1024
+  // The growth budget guards shipped *code* (JS/CSS/WASM). Static assets like
+  // the social-share image are not part of the JS bundle and are covered by the
+  // initial-load gate, so a one-off image swap must not trip the code budget.
+  const CODE = new Set(['js', 'css', 'wasm'])
+  const codeGzip = (r) => (r.files ?? []).filter((f) => CODE.has(f.category)).reduce((a, f) => a + f.gzip, 0)
+  const growthKb = (codeGzip(report) - codeGzip(baseline)) / 1024
   const changed = []
   const baseByPath = new Map(baseline.files.map((f) => [f.path.replace(/-[\w-]{8,}\./, '-*.'), f]))
   for (const f of files) {
@@ -154,7 +159,7 @@ if (baseline) {
     lines.push('', '<details><summary>Changed chunks (>1 KB gzip)</summary>', '', '| Chunk | Change | Size |', '|---|---|---|', ...changed, '', '</details>')
   }
   if (growthKb > MAX_INCREASE_KB) {
-    gates.push(`Total gzip size grew by ${growthKb.toFixed(1)} KB — over the ${MAX_INCREASE_KB} KB budget.`)
+    gates.push(`Code (JS/CSS/WASM) gzip grew by ${growthKb.toFixed(1)} KB — over the ${MAX_INCREASE_KB} KB budget.`)
   }
 }
 if (report.initial.gzip / 1024 > MAX_INITIAL_KB) {
