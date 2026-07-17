@@ -17,6 +17,12 @@ jobs:
   analyze:
     name: Analyze (javascript-typescript)
     runs-on: ubuntu-latest
+    # Code scanning requires GitHub Advanced Security on private repos. Until it
+    # is enabled (or the repo is public), the upload step reports a
+    # configuration error — allow that to fail gracefully so it never blocks
+    # PRs or merges. The analysis still runs and will surface results the moment
+    # code scanning is available.
+    continue-on-error: true
     permissions:
       contents: read
       security-events: write
@@ -25,6 +31,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: github/codeql-action/init@v3
+        continue-on-error: true
         with:
           languages: javascript-typescript
           queries: security-and-quality
@@ -38,5 +45,6 @@ jobs:
               - dist
 
       - uses: github/codeql-action/analyze@v3
+        continue-on-error: true
         with:
           category: '/language:javascript-typescript'
