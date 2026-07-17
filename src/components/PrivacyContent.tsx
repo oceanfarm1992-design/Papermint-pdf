@@ -99,7 +99,7 @@ export default function PrivacyContent() {
                     <Icon className="h-4 w-4" aria-hidden />
                   </span>
                   <h4 className="font-semibold">{cat.name}</h4>
-                  <span className="ml-auto text-xs font-medium text-neutral-400">
+                  <span className="ml-auto text-xs font-medium text-neutral-500 dark:text-neutral-400">
                     {count} tool{count === 1 ? '' : 's'}
                   </span>
                 </div>
@@ -217,7 +217,7 @@ export default function PrivacyContent() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-xs text-neutral-400">
+        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
           *Every tool works offline after the first load, except OCR, which downloads a small open-source
           language pack once and caches it. That download never contains your document.
         </p>
