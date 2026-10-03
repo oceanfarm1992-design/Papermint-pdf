@@ -34,3 +34,6 @@ dependency-health.json
 *.njsproj
 *.sln
 *.sw?
+
+# live-site tool checks (e2e-live) output
+e2e-live/.out/

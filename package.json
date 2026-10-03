@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "e2e:live": "playwright test -c e2e-live/playwright.live.config.ts",
     "bundle:report": "node scripts/bundle-report.mjs",
     "deps:health": "node scripts/dependency-health.mjs",
     "preview": "vite preview",
