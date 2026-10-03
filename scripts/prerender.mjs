@@ -9,7 +9,8 @@
  *
  * This runs after the build (npm "postbuild") and writes one real HTML file per
  * route carrying that route's own <title>, description, canonical, Open Graph /
- * Twitter tags, JSON-LD, and a static content skeleton. React still takes over
+ * Twitter tags, JSON-LD, and static content — tool headers plus the real
+ * ToolGuide / static-page components rendered to markup. React still takes over
  * on load (createRoot replaces #root), so the app is unchanged for users.
  *
  * Output is flat (dist/tool/<slug>.html, dist/about.html, …) so Cloudflare's
@@ -33,10 +34,15 @@ const vite = await createServer({
   server: { middlewareMode: true },
   appType: 'custom',
 })
-let TOOLS, SITE_URL
+let TOOLS, SITE_URL, renderToolGuide, renderStaticPage, toolFaqJsonLd
 try {
   ;({ TOOLS } = await vite.ssrLoadModule('/src/data/tools.ts'))
   ;({ SITE_URL } = await vite.ssrLoadModule('/src/data/meta.ts'))
+  // Real React components rendered to static markup — the same how-to, FAQ and
+  // page copy users see, so crawlers get full content before any JS runs.
+  ;({ renderToolGuide, renderStaticPage, toolFaqJsonLd } = await vite.ssrLoadModule(
+    '/src/prerender/entry.tsx',
+  ))
 } finally {
   await vite.close()
 }
@@ -110,7 +116,8 @@ for (const t of TOOLS) {
     `<h1 class="mt-4 text-2xl font-bold tracking-tight">${esc(t.name)}</h1>` +
     `<p class="mt-1 text-neutral-500 dark:text-neutral-400">${esc(t.description)}</p>` +
     `<p class="mt-6 text-sm text-neutral-500 dark:text-neutral-400">${esc(PRIVACY_LINE)}</p>` +
-    `</div>`
+    `</div>` +
+    renderToolGuide(t.slug)
   const softwareApp = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -129,7 +136,7 @@ for (const t of TOOLS) {
       { '@type': 'ListItem', position: 2, name: t.name, item: url },
     ],
   }
-  writeRoute(path, render({ title, description, path, jsonLd: [softwareApp, breadcrumb], skeleton }))
+  writeRoute(path, render({ title, description, path, jsonLd: [softwareApp, breadcrumb, toolFaqJsonLd(t.slug)], skeleton }))
   count++
 }
 
@@ -140,43 +147,34 @@ const STATIC = [
     title: 'About — Privacy PDF Tools',
     description:
       'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, no tracking. Learn how and why.',
-    h1: 'About Privacy PDF Tools',
   },
   {
     path: '/privacy',
     title: 'Privacy Policy — Privacy PDF Tools',
     description:
       'Our privacy policy: no uploads, no accounts, no tracking, no cookies. Your PDF files never leave your device — everything runs locally in your browser.',
-    h1: 'Privacy Policy',
   },
   {
     path: '/terms',
     title: 'Terms of Use — Privacy PDF Tools',
     description:
       'Terms of use for Privacy PDF Tools — free, provided as-is, MIT-licensed PDF tools that run entirely in your browser.',
-    h1: 'Terms of Use',
   },
   {
     path: '/contact',
     title: 'Contact — Privacy PDF Tools',
     description:
       'Questions, bug reports or ideas about Privacy PDF Tools? Reach us by email — no forms, no accounts.',
-    h1: 'Contact',
   },
   {
     path: '/faq',
     title: 'FAQ — Privacy PDF Tools',
     description:
       'Answers about privacy, file size limits, OCR downloads, PDF encryption and mobile support for Privacy PDF Tools.',
-    h1: 'Frequently Asked Questions',
   },
 ]
 for (const s of STATIC) {
-  const skeleton =
-    `<div class="mx-auto max-w-3xl px-4 py-8">` +
-    `<h1 class="mb-4 text-3xl font-bold tracking-tight">${esc(s.h1)}</h1>` +
-    `<p class="text-neutral-500 dark:text-neutral-400">${esc(s.description)}</p>` +
-    `</div>`
+  const skeleton = renderStaticPage(s.path)
   writeRoute(s.path, render({ title: s.title, description: s.description, path: s.path, skeleton }))
   count++
 }
