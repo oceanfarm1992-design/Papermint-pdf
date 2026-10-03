@@ -1,0 +1,31 @@
+# IndexNow — tell Bing, Yandex, Seznam and Naver about every sitemap URL after
+# each production deploy, so pages are recrawled within hours.
+# The script waits for Cloudflare to finish deploying (it polls for the key file).
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    name: Submit sitemap URLs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Submit to IndexNow
+        run: node scripts/indexnow.mjs

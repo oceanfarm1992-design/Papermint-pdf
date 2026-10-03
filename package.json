@@ -20,7 +20,8 @@
     "bundle:report": "node scripts/bundle-report.mjs",
     "deps:health": "node scripts/dependency-health.mjs",
     "preview": "vite preview",
-    "deploy": "npm run build && npx wrangler deploy"
+    "deploy": "npm run build && npx wrangler deploy",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.7.1",
