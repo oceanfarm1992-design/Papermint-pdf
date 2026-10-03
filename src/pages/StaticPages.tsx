@@ -169,7 +169,7 @@ const FAQS: [string, string][] = [
   ],
   [
     'Can I edit the existing text of a PDF?',
-    'True in-place text editing is not reliably possible in a browser. Use the Whiteout tool to cover old text, then Add Text to type the replacement — the same approach most desktop PDF editors use for flattened documents.',
+    'Yes, for most documents. In Edit PDF, choose “Edit existing text”, click a line and retype it — the original is covered and redrawn in a matching standard font, size and position. The old text stays in the hidden text layer, so use Redact when the change is sensitive.',
   ],
   [
     'How good is PDF → Word?',
