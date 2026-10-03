@@ -182,7 +182,8 @@ export const TOOLS: ToolDef[] = [
         kind: 'select',
         key: 'mode',
         label: 'Split mode',
-        default: 'ranges',
+        // Works with no further input; "Custom ranges" with an empty field errored
+        default: 'single',
         choices: [
           { value: 'ranges', label: 'Custom ranges' },
           { value: 'every', label: 'Every N pages' },

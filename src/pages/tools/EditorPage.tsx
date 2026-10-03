@@ -252,6 +252,10 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
       return
     }
     if (active === 'text' || active === 'note') {
+      // The new box's textarea autofocuses during this event; without this the
+      // browser's default mousedown focus handling then blurs it, which commits
+      // an empty text box and deletes it before the user can type.
+      e.preventDefault()
       const anno: BoxAnno = {
         id: annoId(),
         page: pageIdx,
@@ -410,6 +414,7 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
 
   const startEditSpan = (e: React.PointerEvent, span: EditSpan) => {
     e.stopPropagation()
+    e.preventDefault() // keep focus in the autofocused textarea (see onPointerDown)
     const anno: BoxAnno = {
       id: annoId(),
       page: span.page,
