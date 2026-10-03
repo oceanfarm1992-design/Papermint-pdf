@@ -26,22 +26,9 @@ import { downloadBlob } from '@/utils/download'
 import { friendlyError } from '@/utils/errors'
 import { baseName } from '@/utils/format'
 import { annoId, isBox, isSegment, isStroke, type Anno, type BoxAnno } from '@/features/annotations'
+import ToolHint, { type EditorTool } from './EditorToolHint'
 
 const SignatureModal = lazy(() => import('@/components/SignatureModal'))
-
-type EditorTool =
-  | 'select'
-  | 'edittext'
-  | 'text'
-  | 'pen'
-  | 'highlight'
-  | 'rect'
-  | 'ellipse'
-  | 'line'
-  | 'arrow'
-  | 'note'
-  | 'whiteout'
-  | 'image'
 
 const TOOL_BUTTONS: { id: EditorTool; icon: typeof Type; label: string }[] = [
   { id: 'select', icon: MousePointer2, label: 'Select / move' },
@@ -769,6 +756,8 @@ export default function EditorPage({ tool, signatureMode }: { tool: ToolDef; sig
           Apply & download
         </button>
       </div>
+
+      {doc && <ToolHint active={active} hasEditableText={spans.length > 0} />}
 
       {/* Pages */}
       {doc && (
