@@ -34,13 +34,15 @@ const vite = await createServer({
   server: { middlewareMode: true },
   appType: 'custom',
 })
-let TOOLS, SITE_URL, renderToolGuide, renderStaticPage, toolFaqJsonLd
+let TOOLS, SITE_URL, renderToolGuide, renderStaticPage, renderHomeContent, toolFaqJsonLd
+let seoName, toolSeoTitle, toolSeoDescription
 try {
   ;({ TOOLS } = await vite.ssrLoadModule('/src/data/tools.ts'))
   ;({ SITE_URL } = await vite.ssrLoadModule('/src/data/meta.ts'))
   // Real React components rendered to static markup — the same how-to, FAQ and
   // page copy users see, so crawlers get full content before any JS runs.
-  ;({ renderToolGuide, renderStaticPage, toolFaqJsonLd } = await vite.ssrLoadModule(
+  ;({ seoName, toolSeoTitle, toolSeoDescription } = await vite.ssrLoadModule('/src/data/seo.ts'))
+  ;({ renderToolGuide, renderStaticPage, renderHomeContent, toolFaqJsonLd } = await vite.ssrLoadModule(
     '/src/prerender/entry.tsx',
   ))
 } finally {
@@ -106,14 +108,15 @@ const PRIVACY_LINE =
 // ─── Tool pages (mirror ToolPage.tsx useSeo + header markup) ───
 let count = 0
 for (const t of TOOLS) {
-  const title = `${t.name} — Privacy PDF Tools`
-  const description = `${t.description} 100% free and private — runs in your browser, no uploads, no signup.`
+  const name = seoName(t)
+  const title = toolSeoTitle(t)
+  const description = toolSeoDescription(t)
   const path = `/tool/${t.slug}`
   const url = `${SITE_URL}${path}`
   const skeleton =
     `<div class="mx-auto max-w-3xl px-4 py-8">` +
     `<a href="/" class="text-sm text-neutral-500">← All tools</a>` +
-    `<h1 class="mt-4 text-2xl font-bold tracking-tight">${esc(t.name)}</h1>` +
+    `<h1 class="mt-4 text-2xl font-bold tracking-tight">${esc(name)}</h1>` +
     `<p class="mt-1 text-neutral-500 dark:text-neutral-400">${esc(t.description)}</p>` +
     `<p class="mt-6 text-sm text-neutral-500 dark:text-neutral-400">${esc(PRIVACY_LINE)}</p>` +
     `</div>` +
@@ -121,7 +124,7 @@ for (const t of TOOLS) {
   const softwareApp = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: t.name,
+    name,
     url,
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any',
@@ -133,7 +136,7 @@ for (const t of TOOLS) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: t.name, item: url },
+      { '@type': 'ListItem', position: 2, name, item: url },
     ],
   }
   writeRoute(path, render({ title, description, path, jsonLd: [softwareApp, breadcrumb, toolFaqJsonLd(t.slug)], skeleton }))
@@ -182,13 +185,14 @@ for (const s of STATIC) {
 // ─── Homepage: enrich the existing dist/index.html with site-level JSON-LD and
 // a crawlable list of every tool (internal links search engines can follow). ───
 {
-  const links = TOOLS.map((t) => `<li><a href="/tool/${t.slug}">${esc(t.name)}</a></li>`).join('')
+  const links = TOOLS.map((t) => `<li><a href="/tool/${t.slug}">${esc(seoName(t))}</a></li>`).join('')
   const skeleton =
     `<div class="mx-auto max-w-5xl px-4 py-8">` +
     `<h1 class="text-3xl font-bold tracking-tight">Free &amp; private PDF tools</h1>` +
     `<p class="mt-2 text-neutral-500 dark:text-neutral-400">Merge, split, compress, convert, edit, sign and OCR PDFs — 100% in your browser. No uploads, no accounts, no tracking.</p>` +
     `<nav aria-label="All tools" class="mt-6"><ul>${links}</ul></nav>` +
-    `</div>`
+    `</div>` +
+    renderHomeContent()
   const website = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

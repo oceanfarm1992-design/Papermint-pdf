@@ -5,6 +5,7 @@ import { toolBySlug, CATEGORIES } from '@/data/tools'
 import type { OptionValues, OutputFile } from '@/types/tool'
 import { RECENTS_KEY, useLocalList } from '@/hooks/useLocalList'
 import { useSeo } from '@/hooks/useSeo'
+import { seoName, toolSeoDescription, toolSeoTitle } from '@/data/seo'
 import FileDropzone from '@/components/FileDropzone'
 import OptionsForm from '@/components/OptionsForm'
 import ProgressPanel from '@/components/ProgressPanel'
@@ -66,8 +67,8 @@ export default function ToolPage() {
   useSeo(
     tool
       ? {
-          title: `${tool.name} — Privacy PDF Tools`,
-          description: `${tool.description} 100% free and private — runs in your browser, no uploads, no signup.`,
+          title: toolSeoTitle(tool),
+          description: toolSeoDescription(tool),
           path: `/tool/${tool.slug}`,
         }
       : { title: 'Page not found — Privacy PDF Tools', noindex: true },
@@ -154,7 +155,7 @@ export default function ToolPage() {
             <Icon className="h-8 w-8" aria-hidden />
           </span>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{tool.name}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{seoName(tool)}</h1>
             <p className="mt-1 text-neutral-500 dark:text-neutral-400">{tool.description}</p>
           </div>
         </div>
