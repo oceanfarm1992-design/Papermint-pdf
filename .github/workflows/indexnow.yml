@@ -1,6 +1,8 @@
 # IndexNow — tell Bing, Yandex, Seznam and Naver about every sitemap URL after
 # each production deploy, so pages are recrawled within hours.
-# The script waits for Cloudflare to finish deploying (it polls for the key file).
+# Waits a few minutes first so Cloudflare has published the new build (crawlers
+# then fetch the updated pages) — and so a burst of merges, which cancels the
+# earlier waiting runs (cancel-in-progress), results in a single submission.
 name: IndexNow
 
 on:
@@ -26,6 +28,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Wait for the Cloudflare deploy
+        if: github.event_name == 'push'
+        run: sleep 240
 
       - name: Submit to IndexNow
         run: node scripts/indexnow.mjs
