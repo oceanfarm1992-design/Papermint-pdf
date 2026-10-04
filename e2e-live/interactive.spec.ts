@@ -190,7 +190,9 @@ test('interactive tools', async ({ page }) => {
     const layer = page.locator('main svg[aria-label^="Page 1"], main canvas').first()
     await layer.scrollIntoViewIfNeeded()
     const box = (await layer.boundingBox())!
-    const y = Math.min(box.y + 150, page.viewportSize()!.height - 40)
+    // The page may be scrolled partly above the viewport (Firefox scrolls it
+    // further than Chromium) — click inside its visible part.
+    const y = Math.min(Math.max(box.y, 0) + 150, page.viewportSize()!.height - 40)
     await page.mouse.click(box.x + box.width / 2, y)
     await page.waitForTimeout(800)
     return expectDownload(page, page.getByRole('button', { name: 'Apply & download' }), true)
