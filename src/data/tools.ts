@@ -329,7 +329,8 @@ export const TOOLS: ToolDef[] = [
     speed: 'fast',
     offline: true,
     customPage: 'editor',
-    editorTool: 'select',
+    // Most people open "Edit PDF" to change existing text — start there
+    editorTool: 'edittext',
     note: 'Use “Edit existing text” to click any line and retype it — the original is covered with white and re-drawn in a matching font (serif / sans / mono), size and position. Note: the covered text stays in the hidden text layer, so for sensitive changes use Redact to remove it permanently. Exotic embedded fonts and non-Latin scripts (e.g. Arabic) are approximated with the closest standard font.',
   },
   {
