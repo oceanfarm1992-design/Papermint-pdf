@@ -35,14 +35,26 @@ const vite = await createServer({
   appType: 'custom',
 })
 let TOOLS, SITE_URL, renderToolGuide, renderStaticPage, renderHomeContent, toolFaqJsonLd
-let seoName, toolSeoTitle, toolSeoDescription
+let seoName, toolSeoTitle, toolSeoDescription, GUIDES_TITLE, GUIDES_DESCRIPTION
+let GUIDE_SLUGS, guideMeta, renderGuide, renderGuidesIndex, guideJsonLd
 try {
   ;({ TOOLS } = await vite.ssrLoadModule('/src/data/tools.ts'))
   ;({ SITE_URL } = await vite.ssrLoadModule('/src/data/meta.ts'))
   // Real React components rendered to static markup — the same how-to, FAQ and
   // page copy users see, so crawlers get full content before any JS runs.
-  ;({ seoName, toolSeoTitle, toolSeoDescription } = await vite.ssrLoadModule('/src/data/seo.ts'))
-  ;({ renderToolGuide, renderStaticPage, renderHomeContent, toolFaqJsonLd } = await vite.ssrLoadModule(
+  ;({ seoName, toolSeoTitle, toolSeoDescription, GUIDES_TITLE, GUIDES_DESCRIPTION } =
+    await vite.ssrLoadModule('/src/data/seo.ts'))
+  ;({
+    renderToolGuide,
+    renderStaticPage,
+    renderHomeContent,
+    toolFaqJsonLd,
+    GUIDE_SLUGS,
+    guideMeta,
+    renderGuide,
+    renderGuidesIndex,
+    guideJsonLd,
+  } = await vite.ssrLoadModule(
     '/src/prerender/entry.tsx',
   ))
 } finally {
@@ -179,6 +191,19 @@ const STATIC = [
 for (const s of STATIC) {
   const skeleton = renderStaticPage(s.path)
   writeRoute(s.path, render({ title: s.title, description: s.description, path: s.path, skeleton }))
+  count++
+}
+
+// ─── Guides (/guides and /guides/<slug>) ───
+writeRoute(
+  '/guides',
+  render({ title: GUIDES_TITLE, description: GUIDES_DESCRIPTION, path: '/guides', skeleton: renderGuidesIndex() }),
+)
+count++
+for (const slug of GUIDE_SLUGS) {
+  const path = `/guides/${slug}`
+  const { title, description } = guideMeta(slug)
+  writeRoute(path, render({ title, description, path, jsonLd: guideJsonLd(slug), skeleton: renderGuide(slug) }))
   count++
 }
 

@@ -15,6 +15,10 @@ export const HOME_TITLE = 'Privacy PDF Tools — Merge, Compress & Edit PDFs Fre
 export const HOME_DESCRIPTION =
   'Free online PDF tools that never upload your files: merge, split, compress, convert, edit, sign and OCR PDFs 100% in your browser. No signup, no watermarks, no tracking.'
 
+export const GUIDES_TITLE = 'PDF Guides — Private How-Tos & Comparisons'
+export const GUIDES_DESCRIPTION =
+  'How to merge, compress and redact PDFs without uploading them, plus honest comparisons with iLovePDF and Smallpdf.'
+
 /**
  * Search phrases for tools whose UI name is too short or generic to rank
  * ("Draw", "Highlight"). Based on the queries Search Console shows, e.g.
