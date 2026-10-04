@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { ToolDef } from '@/types/tool'
 import { relatedTools, toolContent, toolFaqs } from '@/data/content'
+import { seoName } from '@/data/seo'
 
 /**
  * How-to, FAQ and related-tool links shown below every tool.
@@ -21,12 +22,12 @@ export default function ToolGuide({ tool }: { tool: ToolDef }) {
       {content && (
         <>
           <h2 id="tool-guide-heading" className="text-xl font-semibold text-neutral-900 dark:text-white">
-            About {tool.name}
+            About {seoName(tool)}
           </h2>
           <p className="mt-3">{content.intro}</p>
 
           <h2 className="mt-8 text-xl font-semibold text-neutral-900 dark:text-white">
-            How to use {tool.name}
+            How to use {seoName(tool)}
           </h2>
           <ol className="mt-3 list-decimal space-y-1 pl-6">
             {content.steps.map((step) => (

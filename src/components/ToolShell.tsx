@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import type { ToolDef } from '@/types/tool'
 import { CATEGORIES } from '@/data/tools'
+import { seoName } from '@/data/seo'
 import PrivacyNote from '@/components/PrivacyNote'
 import FileDropzone from '@/components/FileDropzone'
 
@@ -31,7 +32,7 @@ export default function ToolShell({ tool, file, files, onFiles, wide, children }
           <Icon className="h-8 w-8" aria-hidden />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{tool.name}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{seoName(tool)}</h1>
           <p className="mt-1 text-neutral-500 dark:text-neutral-400">{tool.description}</p>
         </div>
       </div>

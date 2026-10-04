@@ -6,6 +6,7 @@
 import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
+import PrivacyContent from '@/components/PrivacyContent'
 import ToolGuide from '@/components/ToolGuide'
 import { toolFaqs } from '@/data/content'
 import { toolBySlug } from '@/data/tools'
@@ -27,6 +28,11 @@ export function renderToolGuide(slug: string): string {
   const tool = toolBySlug(slug)
   if (!tool) throw new Error(`prerender: unknown tool slug "${slug}"`)
   return render(`/tool/${slug}`, <ToolGuide tool={tool} />)
+}
+
+/** The homepage's long-form "why private" section, rendered by the SPA below the catalog. */
+export function renderHomeContent(): string {
+  return render('/', <PrivacyContent />)
 }
 
 export function renderStaticPage(path: string): string {
