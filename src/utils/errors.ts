@@ -1,3 +1,5 @@
+import { isStaleChunkError } from './staleChunk'
+
 /** Error with a message that is safe and useful to show to the user. */
 export class UserError extends Error {
   constructor(message: string) {
@@ -16,6 +18,9 @@ export function isAbort(err: unknown): boolean {
 /** Map raw library errors to human-readable messages. */
 export function friendlyError(err: unknown): string {
   if (err instanceof UserError) return err.message
+  if (isStaleChunkError(err)) {
+    return 'The site was just updated. Please reload the page (Ctrl+F5 / ⌘+Shift+R) and try again.'
+  }
   const msg = err instanceof Error ? err.message : String(err)
   const lower = msg.toLowerCase()
 

@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { isStaleChunkError, reloadOnceForUpdate } from '@/utils/staleChunk'
 
 interface Props {
   children: ReactNode
@@ -15,6 +16,9 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo): void {
+    // A page's code failed to load because the site was redeployed: reload once
+    // to pick up the new build (nothing is lost — no file was chosen yet).
+    if (isStaleChunkError(error) && reloadOnceForUpdate()) return
     // Local console only — there is no telemetry in this app.
     console.error('Unhandled error:', error, info.componentStack)
   }
