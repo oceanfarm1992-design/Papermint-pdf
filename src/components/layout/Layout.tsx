@@ -93,6 +93,9 @@ export default function Layout() {
             <NavLink to="/" className={navLink} end>
               Tools
             </NavLink>
+            <NavLink to="/guides" className={navLink}>
+              Guides
+            </NavLink>
             <NavLink to="/about" className={navLink}>
               About
             </NavLink>
@@ -125,7 +128,7 @@ export default function Layout() {
               Contact
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/oceanfarm1992-design/Papermint-pdf"
               target="_blank"
               rel="noreferrer noopener"
               className="hover:text-neutral-900 dark:hover:text-white"

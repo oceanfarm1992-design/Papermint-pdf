@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import type { ToolDef } from '@/types/tool'
 import { relatedTools, toolContent, toolFaqs } from '@/data/content'
 import { seoName } from '@/data/seo'
+import { guidesForTool } from '@/data/guides'
 
 /**
  * How-to, FAQ and related-tool links shown below every tool.
@@ -13,6 +14,7 @@ export default function ToolGuide({ tool }: { tool: ToolDef }) {
   const content = toolContent(tool.slug)
   const faqs = toolFaqs(tool)
   const related = relatedTools(tool)
+  const guides = guidesForTool(tool.slug)
 
   return (
     <section
@@ -63,6 +65,21 @@ export default function ToolGuide({ tool }: { tool: ToolDef }) {
                   className="inline-block rounded-full border border-neutral-200 px-3 py-1 text-sm hover:border-brand-500 hover:text-brand-600 dark:border-neutral-700 dark:hover:text-brand-400"
                 >
                   {t.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {guides.length > 0 && (
+        <nav aria-label="Related guides" className="mt-8">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Related guides</h2>
+          <ul className="mt-3 space-y-1.5">
+            {guides.map((g) => (
+              <li key={g.slug}>
+                <Link to={`/guides/${g.slug}`} className="text-brand-700 underline dark:text-brand-400">
+                  {g.h1}
                 </Link>
               </li>
             ))}

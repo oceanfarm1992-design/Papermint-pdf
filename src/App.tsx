@@ -10,6 +10,8 @@ const Terms = lazy(() => import('@/pages/StaticPages').then((m) => ({ default: m
 const Contact = lazy(() => import('@/pages/StaticPages').then((m) => ({ default: m.Contact })))
 const Faq = lazy(() => import('@/pages/StaticPages').then((m) => ({ default: m.Faq })))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const GuidesIndex = lazy(() => import('@/pages/Guides').then((m) => ({ default: m.GuidesIndex })))
+const GuidePage = lazy(() => import('@/pages/Guides').then((m) => ({ default: m.GuidePage })))
 
 function Fallback() {
   return (
@@ -69,6 +71,22 @@ export default function App() {
           element={
             <Suspense fallback={<Fallback />}>
               <Faq />
+            </Suspense>
+          }
+        />
+        <Route
+          path="guides"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <GuidesIndex />
+            </Suspense>
+          }
+        />
+        <Route
+          path="guides/:slug"
+          element={
+            <Suspense fallback={<Fallback />}>
+              <GuidePage />
             </Suspense>
           }
         />

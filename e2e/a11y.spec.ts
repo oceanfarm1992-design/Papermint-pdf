@@ -1,7 +1,16 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-const ROUTES = ['/', '/tool/merge-pdf', '/tool/split-pdf', '/privacy', '/faq']
+const ROUTES = [
+  '/',
+  '/tool/merge-pdf',
+  '/tool/split-pdf',
+  '/privacy',
+  '/faq',
+  '/guides',
+  '/guides/ilovepdf-alternative',
+  '/guides/compress-pdf-for-email',
+]
 
 for (const route of ROUTES) {
   test(`accessibility scan: ${route}`, async ({ page }) => {
