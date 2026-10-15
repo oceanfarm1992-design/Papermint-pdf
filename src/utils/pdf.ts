@@ -69,6 +69,14 @@ export async function openWithPdfLib(file: File | Uint8Array, password?: string)
       'This PDF is password-protected. Unlock it first (Security → Unlock PDF), or use a tool that asks for the password.',
     )
   }
+  try {
+    // pdf-lib accepts some truncated files (e.g. header-only) without a usable
+    // page tree; catch that here so every tool sees one friendly error instead
+    // of a raw "Cannot read properties of undefined" deeper in its own logic.
+    doc.getPageCount()
+  } catch {
+    throw new UserError('This file is corrupted or is not a valid PDF.')
+  }
   return doc
 }
 
