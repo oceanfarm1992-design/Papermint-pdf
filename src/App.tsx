@@ -15,7 +15,7 @@ const GuidePage = lazy(() => import('@/pages/Guides').then((m) => ({ default: m.
 
 function Fallback() {
   return (
-    <div className="flex justify-center py-24" role="status" aria-label="Loading">
+    <div className="flex min-h-svh justify-center py-24" role="status" aria-label="Loading">
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
     </div>
   )
