@@ -1,3 +1,5 @@
+@import '@fontsource-variable/space-grotesk/wght.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -14,16 +16,26 @@
   --color-brand-800: #065f46;
   --color-brand-900: #064e3b;
 
+  --color-neon-mint: #3cf5c0;
+  --color-neon-cyan: #38d9ff;
+  --color-neon-violet: #a78bfa;
+
   --color-surface: #ffffff;
   --color-surface-2: #f7f8fa;
   --color-ink: #101318;
+  --color-void: #05060a;
 
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Space Grotesk Variable', var(--font-sans);
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius-card: 1rem;
+  --radius-card: 1.25rem;
 
   --animate-pop: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  --animate-aurora: aurora 22s ease-in-out infinite alternate;
+  --animate-shimmer: shimmer 6s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
 
   @keyframes pop {
     0% {
@@ -35,6 +47,31 @@
       opacity: 1;
     }
   }
+  @keyframes aurora {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(6%, -4%, 0) scale(1.12);
+    }
+    100% {
+      transform: translate3d(-5%, 5%, 0) scale(0.95);
+    }
+  }
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(60 245 192 / 0.55);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgb(60 245 192 / 0);
+    }
+  }
 }
 
 html {
@@ -42,15 +79,21 @@ html {
 }
 
 body {
-  @apply bg-white text-neutral-900 antialiased dark:bg-[#0c0d10] dark:text-neutral-100;
+  @apply bg-white text-neutral-900 antialiased dark:bg-void dark:text-neutral-100;
   font-family: var(--font-sans);
 }
 
-::selection {
-  @apply bg-brand-500/25;
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
-/* Subtle scrollbars */
+::selection {
+  @apply bg-neon-cyan/30;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgb(0 0 0 / 0.2) transparent;
@@ -59,34 +102,159 @@ body {
   scrollbar-color: rgb(255 255 255 / 0.15) transparent;
 }
 
-/* Focus visibility (WCAG) */
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-brand-500;
+  @apply outline-2 outline-offset-2 outline-neon-cyan;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Fixed backdrop: drifting aurora blobs over a faint perspective grid */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora__blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.18;
+  animation: var(--animate-aurora);
+}
+.dark .aurora__blob {
+  opacity: 0.32;
+}
+.aurora__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(15 23 42 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(15 23 42 / 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+.dark .aurora__grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
 }
 
 /* Reusable primitives */
 @utility card {
-  @apply rounded-2xl border border-neutral-200/80 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900/70;
+  @apply rounded-[var(--radius-card)] border border-neutral-200/90 bg-white/80 shadow-[0_1px_0_rgb(255_255_255/0.8)_inset,0_8px_24px_-12px_rgb(15_23_42/0.12)] backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.035] dark:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_20px_40px_-24px_rgb(0_0_0/0.8)];
+}
+
+@utility glass {
+  @apply border border-neutral-200/80 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0d14]/70;
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-brand-600),
+    #0891b2 35%,
+    #7c3aed 65%,
+    var(--color-brand-600)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+  @variant dark {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-neon-mint),
+      var(--color-neon-cyan) 35%,
+      var(--color-neon-violet) 65%,
+      var(--color-neon-mint)
+    );
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  @apply text-[11px] font-medium tracking-[0.18em] uppercase;
 }
 
 @utility btn-primary {
-  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-700 px-5 py-2.5 font-medium text-white transition-colors select-none hover:bg-brand-800 active:bg-brand-900 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-neon-mint to-neon-cyan px-5 py-2.5 font-semibold text-[#03140f] shadow-[0_0_0_1px_rgb(255_255_255/0.25)_inset,0_8px_28px_-8px_rgb(56_217_255/0.6)] transition-all select-none hover:shadow-[0_0_0_1px_rgb(255_255_255/0.35)_inset,0_10px_36px_-6px_rgb(60_245_192/0.75)] hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
 }
 
 @utility btn-secondary {
-  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2 font-medium text-neutral-800 transition-colors select-none hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800;
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white/80 px-4 py-2 font-medium text-neutral-800 backdrop-blur transition-colors select-none hover:border-neutral-400 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-neutral-100 dark:hover:border-neon-cyan/50 dark:hover:bg-white/10;
 }
 
 @utility btn-ghost {
-  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm text-neutral-600 transition-colors select-none hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100;
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm text-neutral-600 transition-colors select-none hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-white;
 }
 
 @utility input-base {
-  @apply w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100;
+  @apply w-full rounded-xl border border-neutral-300 bg-white/90 px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:border-neon-cyan focus:shadow-[0_0_0_4px_rgb(56_217_255/0.15)] focus:outline-none dark:border-white/15 dark:bg-white/5 dark:text-neutral-100 dark:placeholder:text-neutral-500;
 }
 
 @utility label-base {
   @apply mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300;
+}
+
+/* Cursor-tracking spotlight; parent sets --mx/--my */
+@utility spotlight {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(56 217 255 / 0.9),
+      rgb(167 139 250 / 0.5) 40%,
+      transparent 70%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(56 217 255 / 0.1),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  &:hover::before,
+  &:hover::after,
+  &:focus-visible::before,
+  &:focus-visible::after {
+    opacity: 1;
+  }
 }
 
 /* Checkerboard behind transparent previews */

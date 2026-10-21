@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Star, WifiOff, Zap } from 'lucide-react'
+import { ArrowUpRight, Star, WifiOff, Zap } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { ToolDef } from '@/types/tool'
 import { CATEGORIES } from '@/data/tools'
@@ -28,27 +28,38 @@ export default function ToolCard({ tool }: { tool: ToolDef }) {
     >
       <Link
         to={`/tool/${tool.slug}`}
-        className="card flex h-full flex-col gap-3 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-400/60 hover:shadow-md dark:hover:border-brand-500/50"
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect()
+          e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+          e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+        }}
+        className="card spotlight flex h-full flex-col gap-3 p-5 transition-transform duration-300 hover:-translate-y-1"
       >
         <div className="flex items-start justify-between">
           <span
-            className={`inline-flex rounded-xl p-2.5 ${category?.accent ?? 'bg-neutral-100 text-neutral-600'}`}
+            className={`inline-flex rounded-xl p-2.5 ring-1 ring-current/15 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-4deg] ${category?.accent ?? 'bg-neutral-100 text-neutral-600'}`}
           >
             <Icon className="h-6 w-6" aria-hidden />
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+          <span className="inline-flex items-center gap-1 rounded-full border border-neutral-200 px-2 py-0.5 font-mono text-[10.5px] font-medium text-neutral-600 dark:border-white/10 dark:text-neutral-400">
             <Zap className="h-3 w-3" aria-hidden /> {SPEED_LABEL[tool.speed]}
           </span>
         </div>
         <div>
-          <h3 className="font-semibold text-neutral-900 dark:text-white">{tool.name}</h3>
-          <p className="mt-1 line-clamp-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <h3 className="flex items-center gap-1.5 font-semibold text-neutral-900 dark:text-white">
+            {tool.name}
+            <ArrowUpRight
+              className="h-4 w-4 -translate-x-1 text-cyan-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 dark:text-neon-cyan"
+              aria-hidden
+            />
+          </h3>
+          <p className="mt-1 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
             {tool.description}
           </p>
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-1.5 text-[11px] font-medium">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-            🔒 100% local
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden /> 100% local
           </span>
           {tool.offline && (
             <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2 py-0.5 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400">
@@ -65,7 +76,7 @@ export default function ToolCard({ tool }: { tool: ToolDef }) {
         className={`absolute right-3 bottom-3 rounded-full p-1.5 transition-all ${
           isFav
             ? 'text-amber-500'
-            : 'text-neutral-300 opacity-0 group-hover:opacity-100 hover:text-amber-500 focus-visible:opacity-100 dark:text-neutral-600'
+            : 'text-neutral-400 opacity-0 group-hover:opacity-100 hover:text-amber-500 focus-visible:opacity-100 dark:text-neutral-500'
         }`}
       >
         <Star className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} aria-hidden />
