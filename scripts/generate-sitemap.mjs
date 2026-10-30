@@ -35,7 +35,7 @@ function lastCommitDate() {
     const d = execSync('git log -1 --format=%cs', { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] })
       .toString()
       .trim()
-    return /^d{4}-d{2}-d{2}$/.test(d) ? d : null
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null
   } catch {
     return null
   }

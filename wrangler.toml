@@ -6,9 +6,11 @@
 #   Build command:  npm run build
 #   Deploy command: npx wrangler deploy   (runs automatically on git push)
 #
-# The [assets] block makes `wrangler deploy` upload ./dist as static assets with
-# single-page-application fallback, so client-side routes (e.g. /tool/merge-pdf)
-# resolve to index.html instead of 404ing.
+# The [assets] block makes `wrangler deploy` upload ./dist as static assets.
+# Every real route is prerendered to its own HTML file (scripts/prerender.mjs),
+# so unknown URLs get dist/404.html with a real HTTP 404 instead of the SPA
+# index.html with a 200 — which search engines report as a soft 404 / duplicate
+# of the homepage. React then renders the NotFound page on top of it.
 
 name = "papermint-pdf"
 compatibility_date = "2026-07-01"
@@ -24,4 +26,4 @@ routes = [
 
 [assets]
 directory = "./dist"
-not_found_handling = "single-page-application"
+not_found_handling = "404-page"

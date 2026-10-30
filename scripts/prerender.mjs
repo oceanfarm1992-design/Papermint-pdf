@@ -207,6 +207,25 @@ for (const slug of GUIDE_SLUGS) {
   count++
 }
 
+// ─── 404 page: served by Cloudflare (not_found_handling = "404-page") with a
+// real 404 status for any URL that has no file. No canonical — it must not
+// point unknown URLs at the homepage. Mirrors NotFound.tsx. ───
+{
+  let html = setTitle(template, 'Page not found — Privacy PDF Tools')
+  html = html.replace(/\s*<link\s+rel="canonical"[^>]*>/, '')
+  html = html.replace('</head>', '    <meta name="robots" content="noindex,follow" />\n  </head>')
+  html = setRootContent(
+    html,
+    `<div class="mx-auto max-w-lg px-4 py-24 text-center">` +
+      `<p class="text-6xl font-bold text-neutral-200 dark:text-neutral-700">404</p>` +
+      `<h1 class="mt-4 text-xl font-semibold">This page doesn’t exist</h1>` +
+      `<p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">The tool or page you’re looking for couldn’t be found.</p>` +
+      `<a href="/" class="btn-primary mt-6 inline-flex">Browse all tools</a>` +
+      `</div>`,
+  )
+  writeFileSync(join(dist, '404.html'), html)
+}
+
 // ─── Homepage: enrich the existing dist/index.html with site-level JSON-LD and
 // a crawlable list of every tool (internal links search engines can follow). ───
 {

@@ -56,8 +56,8 @@ npm run deploy     # builds, then `wrangler deploy`
 
 The repo ships with everything the deploy needs:
 
-- [`wrangler.toml`](wrangler.toml) — serves `./dist` as static assets with single-page-application
-  fallback so client-side routes resolve to `index.html`
+- [`wrangler.toml`](wrangler.toml) — serves `./dist` as static assets; every route is prerendered to
+  its own HTML file, and unknown URLs get `404.html` with a real 404 status
 - [`public/_headers`](public/_headers) — security headers + immutable caching for hashed assets
 - `robots.txt`, `sitemap.xml` (auto-generated from the tool registry at build time), OpenGraph/Twitter
   meta, JSON-LD structured data, `manifest.webmanifest` + service worker for PWA/offline
