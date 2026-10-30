@@ -17,4 +17,13 @@ export interface ToolContent {
   steps: string[]
   /** Tool-specific questions. Shared privacy Q&A is appended automatically. */
   faqs: ToolFaq[]
+  /** Concrete situations the tool is for, one short sentence each. */
+  useCases?: string[]
+  /** Practical notes: how options behave, limits, alternatives. */
+  details?: { heading: string; text: string }[]
+}
+
+/** Extra copy layered onto a tool's base content (faqs are appended). */
+export type ToolContentExtras = Pick<ToolContent, 'useCases' | 'details'> & {
+  faqs?: ToolFaq[]
 }

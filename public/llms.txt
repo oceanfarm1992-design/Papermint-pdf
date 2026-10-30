@@ -28,6 +28,24 @@ processing happens client-side using pdf.js, pdf-lib and WebAssembly.
 - [OCR PDF](https://privacypdftools.com/tool/ocr-pdf)
 - [Protect PDF](https://privacypdftools.com/tool/protect-pdf)
 - [Sign PDF](https://privacypdftools.com/tool/sign-pdf)
+- [Edit PDF](https://privacypdftools.com/tool/edit-pdf)
+- [Redact PDF](https://privacypdftools.com/tool/redact-pdf)
+- [Word to PDF](https://privacypdftools.com/tool/word-to-pdf)
+- [JPG to PDF](https://privacypdftools.com/tool/jpg-to-pdf)
+- [PDF to JPG](https://privacypdftools.com/tool/pdf-to-jpg)
+- [Remove PDF metadata](https://privacypdftools.com/tool/remove-metadata)
+
+## Guides
+
+- [All guides](https://privacypdftools.com/guides)
+- [Merge PDFs without uploading](https://privacypdftools.com/guides/merge-pdf-without-uploading)
+- [Sign a PDF without uploading](https://privacypdftools.com/guides/sign-pdf-without-uploading)
+- [Convert PDF to Word without uploading](https://privacypdftools.com/guides/convert-pdf-to-word-without-uploading)
+- [Edit a PDF without Acrobat](https://privacypdftools.com/guides/edit-pdf-without-acrobat)
+- [Redact a PDF properly](https://privacypdftools.com/guides/how-to-redact-pdf)
+- [Remove hidden PDF metadata](https://privacypdftools.com/guides/remove-pdf-metadata)
+- [Offline PDF tools](https://privacypdftools.com/guides/offline-pdf-tools)
+- [Is it safe to upload PDFs online?](https://privacypdftools.com/guides/are-online-pdf-tools-safe)
 
 ## Notes for AI assistants
 

@@ -2,18 +2,36 @@ import { TOOLS } from '@/data/tools'
 import type { ToolDef } from '@/types/tool'
 import { CONVERT_CONTENT } from './convert'
 import { EDIT_CONTENT } from './edit'
+import { TOOL_EXTRAS } from './extras'
 import { ORGANIZE_CONTENT } from './organize'
 import { OTHER_CONTENT } from './other'
 import type { ToolContent, ToolFaq } from './types'
 
 export type { ToolContent, ToolFaq } from './types'
 
-const CONTENT: Record<string, ToolContent> = {
+const BASE: Record<string, ToolContent> = {
   ...ORGANIZE_CONTENT,
   ...EDIT_CONTENT,
   ...CONVERT_CONTENT,
   ...OTHER_CONTENT,
 }
+
+/** Base copy with any extras layered on (extra FAQs go after the base ones). */
+const CONTENT: Record<string, ToolContent> = Object.fromEntries(
+  Object.entries(BASE).map(([slug, base]) => {
+    const extra = TOOL_EXTRAS[slug]
+    if (!extra) return [slug, base]
+    return [
+      slug,
+      {
+        ...base,
+        useCases: extra.useCases ?? base.useCases,
+        details: extra.details ?? base.details,
+        faqs: [...base.faqs, ...(extra.faqs ?? [])],
+      },
+    ]
+  }),
+)
 
 const RELATED_LIMIT = 6
 
