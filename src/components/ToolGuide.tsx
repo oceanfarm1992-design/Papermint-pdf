@@ -28,6 +28,19 @@ export default function ToolGuide({ tool }: { tool: ToolDef }) {
           </h2>
           <p className="mt-3">{content.intro}</p>
 
+          {content.useCases && content.useCases.length > 0 && (
+            <>
+              <h2 className="mt-8 text-xl font-semibold text-neutral-900 dark:text-white">
+                When to use {seoName(tool)}
+              </h2>
+              <ul className="mt-3 list-disc space-y-1 pl-6">
+                {content.useCases.map((u) => (
+                  <li key={u}>{u}</li>
+                ))}
+              </ul>
+            </>
+          )}
+
           <h2 className="mt-8 text-xl font-semibold text-neutral-900 dark:text-white">
             How to use {seoName(tool)}
           </h2>
@@ -36,6 +49,15 @@ export default function ToolGuide({ tool }: { tool: ToolDef }) {
               <li key={step}>{step}</li>
             ))}
           </ol>
+
+          {content.details?.map((d) => (
+            <div key={d.heading}>
+              <h2 className="mt-8 text-xl font-semibold text-neutral-900 dark:text-white">
+                {d.heading}
+              </h2>
+              <p className="mt-3">{d.text}</p>
+            </div>
+          ))}
         </>
       )}
 
