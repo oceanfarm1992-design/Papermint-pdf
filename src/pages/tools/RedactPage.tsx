@@ -192,7 +192,7 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
               (b, k) => (
                 <div
                   key={k}
-                  className="group absolute bg-black"
+                  className="group pointer-events-none absolute bg-black"
                   style={{
                     left: `${(b.x / meta.w) * 100}%`,
                     top: `${(b.y / meta.h) * 100}%`,
@@ -203,7 +203,7 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
                   <button
                     type="button"
                     aria-label="Remove this redaction box"
-                    className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                    className="pointer-events-auto absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={(e) => {
                       e.stopPropagation()
