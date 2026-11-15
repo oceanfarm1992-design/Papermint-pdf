@@ -17,7 +17,7 @@ export function About() {
   useSeo({
     title: 'About — Privacy PDF Tools',
     description:
-      'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, no tracking. Learn how and why.',
+      'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, nothing stored on our servers. Learn how and why.',
     path: '/about',
   })
   return (
@@ -47,6 +47,17 @@ export function About() {
         PDF.js; OCR uses the Tesseract engine compiled to WebAssembly. The whole site is static and
         served from a CDN — there is no backend, no database and no analytics.
       </p>
+      <h2>How the site is funded</h2>
+      <p>
+        The tools are free and stay free. To pay for running and improving the site, our guide articles
+        may show ads from Google AdSense, and you can also support us with a donation. The tool pages
+        never show ads, and ads never see your documents — your files are processed on your device and
+        are never uploaded or stored on our servers.{' '}
+        <a className="text-brand-700 underline dark:text-brand-400" href="/privacy#advertising">
+          How ads work here
+        </a>
+        .
+      </p>
     </Page>
   )
 }
@@ -55,35 +66,76 @@ export function Privacy() {
   useSeo({
     title: 'Privacy Policy — Privacy PDF Tools',
     description:
-      'Our privacy policy: no uploads, no accounts, no tracking, no cookies. Your PDF files never leave your device — everything runs locally in your browser.',
+      'Our privacy policy: your PDF files never leave your device and are never stored on our servers. No accounts, and no ads, tracking or cookies on tool pages.',
     path: '/privacy',
   })
   return (
     <Page title="Privacy Policy">
       <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
-        The short version: your files never leave your device, and we collect nothing. Not “nothing
-        except…” — nothing.
+        The short version: your files never leave your device, and they are never uploaded to or stored
+        on our servers. The PDF tools have no ads, no analytics and no cookies. To keep the tools free,
+        our guide articles may show Google ads — those ads never see your documents.
       </p>
-      <h2>No uploads</h2>
+      <h2>No uploads, nothing stored</h2>
       <p>
         Every tool runs locally in your browser using JavaScript and WebAssembly. Your PDFs and images
         are read directly into your browser’s memory, processed there, and saved back to your device. No
-        file content, file name or metadata is ever transmitted to us or anyone else.
+        file content, file name or metadata is ever transmitted to us, to advertisers, or to anyone else,
+        and nothing is stored on our servers.
       </p>
       <h2>No accounts</h2>
       <p>There is no signup, no login, and no way for us to identify you.</p>
-      <h2>No tracking</h2>
+      <h2>No tracking on tool pages</h2>
       <ul>
-        <li>No analytics (no Google Analytics, Clarity, Pixel, Mixpanel or similar).</li>
+        <li>
+          No analytics (no Google Analytics, Clarity, Pixel, Mixpanel or similar) anywhere on the site.
+        </li>
         <li>No error-reporting beacons.</li>
         <li>No fingerprinting.</li>
-        <li>No third-party embeds on tool pages.</li>
+        <li>
+          No ads and no third-party scripts on tool pages. The site’s security settings block them there,
+          and if you go from a guide article to a tool, the page reloads so no ad code is running while
+          you work with your files.
+        </li>
       </ul>
-      <h2>No cookies</h2>
+      <h2 id="advertising">Advertising (guide articles only)</h2>
       <p>
-        Privacy PDF Tools sets no cookies. Your browser’s <em>localStorage</em> is used only for optional
-        preferences: your theme choice and your favorite/recent tool names. It never contains files, file
-        names or document content. Clear your browser data at any time to remove it.
+        Running and improving this site costs money, and ads are how we keep the tools free. Our guide
+        and comparison articles may show ads from Google AdSense. Your documents are never shared with
+        Google or any advertiser: files are processed only on your device and never uploaded.
+      </p>
+      <p>
+        Google and its partners use cookies to show ads based on your visits to this and other websites.
+        Google’s use of advertising cookies enables it and its partners to serve ads to you based on your
+        visit to this site and/or other sites on the Internet. You can opt out of personalized
+        advertising by visiting{' '}
+        <a className="underline" href="https://adssettings.google.com" rel="noopener">
+          Google Ads Settings
+        </a>
+        , or opt out of some third-party vendors’ use of cookies for personalized advertising at{' '}
+        <a className="underline" href="https://www.aboutads.info" rel="noopener">
+          www.aboutads.info
+        </a>
+        . Learn more in{' '}
+        <a
+          className="underline"
+          href="https://policies.google.com/technologies/partner-sites"
+          rel="noopener"
+        >
+          how Google uses information from sites that use its services
+        </a>
+        .
+      </p>
+      <p>
+        Visitors in the European Economic Area, the UK and Switzerland are asked for consent before any
+        advertising cookies are used, and can choose non-personalized ads.
+      </p>
+      <h2>Cookies and local storage</h2>
+      <p>
+        Privacy PDF Tools itself sets no cookies. Advertising cookies may be set by Google only on guide
+        articles that show ads, as described above. Your browser’s <em>localStorage</em> is used only for
+        optional preferences: your theme choice and your favorite/recent tool names. It never contains
+        files, file names or document content. Clear your browser data at any time to remove it.
       </p>
       <h2>The one network exception</h2>
       <p>
@@ -158,6 +210,10 @@ const FAQS: [string, string][] = [
   [
     'Are my files really not uploaded anywhere?',
     'Correct. Open your browser’s developer tools (Network tab) while using any tool — you will see no requests carrying your file. Processing happens in JavaScript/WebAssembly inside the page. Most tools work with Wi-Fi turned off.',
+  ],
+  [
+    'Why do some pages show ads?',
+    'Running and improving the site costs money, and ads keep the tools free. Our guide articles may show ads from Google AdSense; the tool pages never show ads. Ads never see your documents — your files are processed on your device and are never uploaded or stored on our servers. If you prefer, you can support us with a donation instead.',
   ],
   [
     'Is there a file size limit?',

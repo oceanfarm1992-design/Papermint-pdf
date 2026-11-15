@@ -1,8 +1,10 @@
+import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import type { Guide, GuideBlock } from '@/data/guides'
 import { GUIDES } from '@/data/guides'
 import { toolBySlug } from '@/data/tools'
 import { seoName } from '@/data/seo'
+import AdSlot, { AdDisclosure } from '@/components/AdSlot'
 
 /**
  * A guide / comparison article. Pure props → markup: it is also rendered to
@@ -113,9 +115,14 @@ export default function GuideArticle({ guide }: { guide: Guide }) {
       <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
         Updated <time dateTime={guide.updated}>{guide.updated}</time>
       </p>
+      <AdDisclosure />
 
       {guide.blocks.map((block, i) => (
-        <Block key={i} block={block} />
+        <Fragment key={i}>
+          <Block block={block} />
+          {/* one ad a few paragraphs in, on articles long enough to carry it */}
+          {i === 2 && guide.blocks.length > 6 && <AdSlot />}
+        </Fragment>
       ))}
 
       {guide.faqs.length > 0 && (
@@ -131,6 +138,8 @@ export default function GuideArticle({ guide }: { guide: Guide }) {
           </dl>
         </>
       )}
+
+      <AdSlot />
 
       <nav
         aria-label="More guides"

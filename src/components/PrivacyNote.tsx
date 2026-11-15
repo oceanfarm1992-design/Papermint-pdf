@@ -6,7 +6,8 @@ export default function PrivacyNote() {
     >
       <span aria-hidden>🔒</span>
       <span>
-        Your files never leave your device. Everything is processed locally inside your browser.
+        Your files never leave your device. Nothing is uploaded or stored on our servers: everything is
+        processed locally inside your browser.
       </span>
     </p>
   )

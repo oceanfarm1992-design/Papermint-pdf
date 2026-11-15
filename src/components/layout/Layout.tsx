@@ -4,6 +4,7 @@ import { Heart, Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme, type Theme } from '@/hooks/useTheme'
 import { APP_VERSION, CRYPTO_WALLETS, DONATE_LINKS } from '@/data/meta'
 import CryptoDonate from '@/components/CryptoDonate'
+import { useAdIsolation } from '@/utils/ads'
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -41,6 +42,7 @@ function ThemeToggle() {
 
 export default function Layout() {
   const { pathname } = useLocation()
+  useAdIsolation(pathname)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])

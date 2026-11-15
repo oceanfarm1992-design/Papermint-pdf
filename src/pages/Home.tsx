@@ -76,7 +76,7 @@ export default function Home() {
           className="mx-auto mt-6 max-w-xl text-lg text-neutral-600 dark:text-neutral-400"
         >
           Merge, split, compress, convert, edit, sign and OCR — {TOOLS.length} free tools that run
-          entirely in your browser. No accounts, no tracking, no limits.
+          entirely in your browser. No accounts, no uploads, no limits.
         </motion.p>
 
         <motion.div

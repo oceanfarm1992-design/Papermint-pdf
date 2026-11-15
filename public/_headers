@@ -1,6 +1,6 @@
 # Cloudflare Pages headers
 # Security + privacy hardening. No third-party origins are ever contacted for
-# core tools; OCR (tesseract.js) fetches its worker, WASM core and language
+# core tools (the one exception, Google ads on /guides/<slug>, is at the end); OCR (tesseract.js) fetches its worker, WASM core and language
 # packs from cdn.jsdelivr.net on demand and runs the worker from a blob: URL —
 # the only external origin the CSP below allows.
 #
@@ -27,3 +27,15 @@
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
+
+# Guide articles only: Google AdSense (src/components/AdSlot.tsx). These pages
+# never handle files, and leaving them for any other page triggers a full reload
+# (useAdIsolation), so tool pages always run under the strict CSP above. Ad
+# scripts inject their own scripts and frames from many Google hosts, so script,
+# frame, image and connect sources are opened to https: here and nowhere else.
+# 'unsafe-inline' replaces the theme-script hash (a hash would disable it).
+/guides/*
+  ! Content-Security-Policy
+  ! Referrer-Policy
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' blob: data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https:; frame-src https:; worker-src 'self' blob:; connect-src 'self' blob: data: https:; manifest-src 'self'; upgrade-insecure-requests

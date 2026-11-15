@@ -161,13 +161,13 @@ const STATIC = [
     path: '/about',
     title: 'About — Privacy PDF Tools',
     description:
-      'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, no tracking. Learn how and why.',
+      'Privacy PDF Tools runs every PDF operation locally in your browser using WebAssembly — no uploads, no backend, nothing stored on our servers. Learn how and why.',
   },
   {
     path: '/privacy',
     title: 'Privacy Policy — Privacy PDF Tools',
     description:
-      'Our privacy policy: no uploads, no accounts, no tracking, no cookies. Your PDF files never leave your device — everything runs locally in your browser.',
+      'Our privacy policy: your PDF files never leave your device and are never stored on our servers. No accounts, and no ads, tracking or cookies on tool pages.',
   },
   {
     path: '/terms',
@@ -233,7 +233,7 @@ for (const slug of GUIDE_SLUGS) {
   const skeleton =
     `<div class="mx-auto max-w-5xl px-4 py-8">` +
     `<h1 class="text-3xl font-bold tracking-tight">Free &amp; private PDF tools</h1>` +
-    `<p class="mt-2 text-neutral-500 dark:text-neutral-400">Merge, split, compress, convert, edit, sign and OCR PDFs — 100% in your browser. No uploads, no accounts, no tracking.</p>` +
+    `<p class="mt-2 text-neutral-500 dark:text-neutral-400">Merge, split, compress, convert, edit, sign and OCR PDFs — 100% in your browser. No accounts, no uploads, no limits.</p>` +
     `<nav aria-label="All tools" class="mt-6"><ul>${links}</ul></nav>` +
     `</div>` +
     renderHomeContent()

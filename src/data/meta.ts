@@ -11,6 +11,19 @@ export const DONATE_LINKS: { label: string; url: string }[] = [
   { label: 'PayPal', url: 'https://www.paypal.me/trendbazaar585' },
 ]
 
+// Google AdSense. Ads appear ONLY on guide articles (/guides/<slug>), never on
+// tool pages. Leave ADSENSE_CLIENT empty to turn ads off completely: no ad code
+// is loaded and public/ads.txt stays a placeholder.
+// The publisher ID is public by design (Google shows it in page HTML and
+// ads.txt), so it is safe to commit to this public repo.
+//   1. ADSENSE_CLIENT alone: adds Google's site-verification <meta> tag and a
+//      real public/ads.txt so AdSense can approve the site. No ad code loads.
+//   2. Once approved, create a "Display" ad unit in AdSense and paste its slot
+//      number into ADSENSE_SLOT: ads then show on guide articles only.
+//   3. Keep "Auto ads" OFF in AdSense so ads never appear outside guide articles.
+export const ADSENSE_CLIENT = 'ca-pub-7747069177703517'
+export const ADSENSE_SLOT = ''
+
 // Crypto wallet addresses, shown in a "Crypto" copy-to-clipboard dropdown.
 // Empty the array to hide the crypto option.
 export const CRYPTO_WALLETS: { label: string; address: string }[] = [
