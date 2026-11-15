@@ -27,6 +27,12 @@ test.setTimeout(400_000)
  * events outside it are not delivered).
  */
 async function drag(page: Page, target: Locator, from: [number, number], to: [number, number]) {
+  // The page preview can still be rendering (WebKit on CI often needs more than
+  // open()'s 3 s): the <img> already exists but has no height until it loads, so
+  // a drag would miss it. Wait until it is really drawn.
+  await expect
+    .poll(async () => (await target.boundingBox())?.height ?? 0, { timeout: 30_000 })
+    .toBeGreaterThan(100)
   await target.scrollIntoViewIfNeeded()
   await target.evaluate((el) => el.scrollIntoView({ block: 'start' }))
   await page.evaluate(() => window.scrollBy(0, -120))
@@ -46,9 +52,14 @@ async function drag(page: Page, target: Locator, from: [number, number], to: [nu
 }
 
 async function expectDownload(page: Page, button: Locator, mustPaint = false): Promise<string> {
-  const dl = page.waitForEvent('download', { timeout: 45_000 })
-  await button.click()
-  const d = await dl
+  // Wait for the download and the click together, both with a timeout, so a
+  // button that never becomes clickable fails just this tool. (Awaiting the
+  // click first left the download timer to reject unhandled, which ended the
+  // whole test and made every later tool fail with "browser has been closed".)
+  const [d] = await Promise.all([
+    page.waitForEvent('download', { timeout: 45_000 }),
+    button.click({ timeout: 45_000 }),
+  ])
   const path = await d.path()
   const size = path ? readFileSync(path).length : 0
   if (size < 100) throw new Error(`download ${d.suggestedFilename()} is only ${size} bytes`)

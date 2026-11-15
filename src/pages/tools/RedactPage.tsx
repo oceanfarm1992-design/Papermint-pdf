@@ -36,6 +36,10 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
   const [error, setError] = useState<string | null>(null)
   const drag = useRef<{ page: number; sx: number; sy: number } | null>(null)
   const [draft, setDraft] = useState<Box | null>(null)
+  // Latest box being drawn. pointerup must read this, not `draft`: a quick drag
+  // can deliver move + up before React re-renders, and the `draft` captured by
+  // the handler is then still the 0×0 box from pointerdown, so it was dropped.
+  const draftRef = useRef<Box | null>(null)
 
   const loadFile = useCallback(async (f: File) => {
     setError(null)
@@ -167,23 +171,27 @@ export default function RedactPage({ tool }: { tool: ToolDef }) {
               e.currentTarget.setPointerCapture(e.pointerId)
               const [x, y] = point(e, i)
               drag.current = { page: i, sx: x, sy: y }
-              setDraft({ page: i, x, y, w: 0, h: 0 })
+              draftRef.current = { page: i, x, y, w: 0, h: 0 }
+              setDraft(draftRef.current)
             }}
             onPointerMove={(e) => {
               const d = drag.current
               if (!d || d.page !== i) return
               const [x, y] = point(e, i)
-              setDraft({
+              draftRef.current = {
                 page: i,
                 x: Math.min(d.sx, x),
                 y: Math.min(d.sy, y),
                 w: Math.abs(x - d.sx),
                 h: Math.abs(y - d.sy),
-              })
+              }
+              setDraft(draftRef.current)
             }}
             onPointerUp={() => {
-              if (draft && draft.w > 4 && draft.h > 4) setBoxes((prev) => [...prev, draft])
+              const box = draftRef.current
+              if (box && box.w > 4 && box.h > 4) setBoxes((prev) => [...prev, box])
               drag.current = null
+              draftRef.current = null
               setDraft(null)
             }}
           >
