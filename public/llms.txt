@@ -1,7 +1,7 @@
 # Privacy PDF Tools
 
 > Free, private PDF tools that run entirely in the browser. No file upload,
-> no account, no tracking. Every operation — merge, split, convert, edit,
+> no account, nothing stored on a server. Every operation — merge, split, convert, edit,
 > OCR, sign, compress, protect — runs locally via JavaScript/WebAssembly;
 > documents never leave the visitor's device.
 
@@ -16,7 +16,7 @@ processing happens client-side using pdf.js, pdf-lib and WebAssembly.
 
 - [Home / full tool catalog](https://privacypdftools.com/): searchable list of every tool, grouped by category
 - [About](https://privacypdftools.com/about): what the app is and how local processing works
-- [Privacy Policy](https://privacypdftools.com/privacy): explicit no-upload, no-tracking, no-cookies policy
+- [Privacy Policy](https://privacypdftools.com/privacy): no uploads, nothing stored; no ads, tracking or cookies on tool pages (guide articles may show Google ads)
 - [FAQ](https://privacypdftools.com/faq): common questions about file limits, OCR, encryption, and offline use
 
 ## Popular tools

@@ -48,7 +48,7 @@ function privacyFaq(tool: ToolDef): ToolFaq {
 
 const COST_FAQ: ToolFaq = {
   q: 'Is it really free?',
-  a: 'Yes — free with no signup, no watermarks, no daily limits and no ads. Privacy PDF Tools is open source under the MIT license.',
+  a: 'Yes — free with no signup, no watermarks, no daily limits and no ads on the tools. Privacy PDF Tools is open source under the MIT license.',
 }
 
 export function toolContent(slug: string): ToolContent | undefined {

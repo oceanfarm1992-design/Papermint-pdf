@@ -1,7 +1,7 @@
 {
   "name": "Privacy PDF Tools",
   "short_name": "Privacy PDF",
-  "description": "Free PDF tools that run entirely in your browser. No uploads, no tracking.",
+  "description": "Free PDF tools that run entirely in your browser. No uploads, nothing stored.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0d10",

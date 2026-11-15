@@ -4,7 +4,8 @@
 
 Privacy PDF Tools is a complete, production-ready PDF toolkit that runs **entirely in the browser**.
 50+ tools — merge, split, compress, convert, edit, sign, OCR, redact and more — with **no backend,
-no accounts, no tracking and no cookies**. Files never leave the user's device.
+no accounts, and no ads, tracking or cookies on tool pages**. Files never leave the user's device.
+Guide articles may show Google AdSense ads to fund the site — see "Ads" below.
 
 > 🔒 Your files never leave your device. Everything is processed locally inside your browser.
 
@@ -100,3 +101,19 @@ The custom domain (`privacypdftools.com`) is attached to the Worker from the Clo
 ## License
 
 MIT
+
+## Ads (Google AdSense)
+
+Ads are off until a publisher ID is set, and when on they appear **only on guide articles**
+(`/guides/<slug>`), never on tool pages.
+
+1. Apply for AdSense with `https://privacypdftools.com`.
+2. Once approved, set `ADSENSE_CLIENT` (`ca-pub-…`) and `ADSENSE_SLOT` (a Display ad unit) in
+   `src/data/meta.ts`. `npm run build` regenerates `public/ads.txt` from them.
+3. Keep **Auto ads OFF** in AdSense, and set up the consent message for EEA/UK/Switzerland in
+   AdSense → Privacy & messaging.
+
+How the tools stay isolated: `public/_headers` gives only `/guides/*` a CSP that allows Google's ad
+scripts; every other page keeps the strict CSP. If a visitor navigates from a guide to any other
+page inside the app, `useAdIsolation` (in `src/utils/ads.ts`) reloads the page so no ad
+code is running when a tool opens a file.

@@ -13,7 +13,7 @@ const MAX_TITLE = 60
 
 export const HOME_TITLE = 'Privacy PDF Tools — Merge, Compress & Edit PDFs Free, No Upload'
 export const HOME_DESCRIPTION =
-  'Free online PDF tools that never upload your files: merge, split, compress, convert, edit, sign and OCR PDFs 100% in your browser. No signup, no watermarks, no tracking.'
+  'Free online PDF tools that never upload your files: merge, split, compress, convert, edit, sign and OCR PDFs 100% in your browser. No signup, no watermarks, no storage.'
 
 export const GUIDES_TITLE = 'PDF Guides — Private How-Tos & Comparisons'
 export const GUIDES_DESCRIPTION =
