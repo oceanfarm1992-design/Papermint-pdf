@@ -1,6 +1,6 @@
 export const APP_VERSION = '1.0.0'
 export const APP_NAME = 'Privacy PDF Tools'
-export const CONTACT_EMAIL = 'mmw123450@gmail.com'
+export const CONTACT_EMAIL = 'hello@privacypdftools.com'
 export const SITE_URL = 'https://privacypdftools.com'
 
 // Support / donate links shown in the footer. Empty the array to hide them.
